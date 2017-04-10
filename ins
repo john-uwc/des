@@ -1,0 +1,36 @@
+#!/bin/bash
+
+#author: steven, date:2017.3.31
+
+# des init
+# location calculate
+declare -r atloc="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
+
+
+#
+# infrastructure
+#
+# function to due with module's import
+function include(){
+if [ -f "${atloc}/$1" ]; then
+source ${atloc}/$1
+fi
+}
+
+#
+# init des
+#
+# data warehouse for des
+include "util/map.sh"
+function _dw_(){
+_des_ss_:=$(map init); local order=$1; shift; echo $(map ${_des_ss_} ${order} $@)
+}
+
+# cli alias for des
+for cli in $(ls builtin/*.sh *.sh); do
+c=$(basename $cli); alias ${c%.sh}="source ${atloc}/$cli"
+done
+
+
+# des is ok
+declare -r env_rp_path=$PATH; PATH=$env_rp_path:$atloc
