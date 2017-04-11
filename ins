@@ -2,35 +2,45 @@
 
 #author: steven, date:2017.3.31
 
-# des init
+# des load an init
 # location calculate
-declare -r atloc="$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)"
-
+declare atloc=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
 
 #
 # infrastructure
 #
+# path of des's root
+function root(){
+echo $atloc
+}
+
 # function to due with module's import
 function include(){
-if [ -f "${atloc}/$1" ]; then
-source ${atloc}/$1
+if [ -f "$(root)/$1" ]; then
+source $(root)/$1
 fi
 }
 
 #
-# init des
+# main
 #
-# data warehouse for des
+# data for des
 include "util/map.sh"
-function _dw_(){
-_des_ss_:=$(map init); local order=$1; shift; echo $(map ${_des_ss_} ${order} $@)
+declare _des_ss_=$(map init) # _dw_ is a data pool in memeory cache
+function _dw_purge(){
+_des_ss_=$(map ${_des_ss_} del $@)
+}
+function _dw_store(){
+_des_ss_=$(map ${_des_ss_} put $@)
+}
+function _dw_query(){
+echo $(map ${_des_ss_} get $1)
 }
 
 # cli alias for des
-for cli in $(ls builtin/*.sh *.sh); do
-c=$(basename $cli); alias ${c%.sh}="source ${atloc}/$cli"
+for cli in $(ls $(root)/builtin/*.sh $(root)/*.sh 2> /dev/null); do
+c=$(basename $cli); alias ${c%.sh}="source $cli"
 done
 
-
-# des is ok
-declare -r env_rp_path=$PATH; PATH=$env_rp_path:$atloc
+# des ready
+declare env_rp_path=${env_rp_path:=$PATH} && PATH=$env_rp_path:$(root)
