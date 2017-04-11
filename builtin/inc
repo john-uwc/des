@@ -1,0 +1,18 @@
+#!/bin/bash
+
+#author: steven, date: 2017.3.31
+
+include "util/stack.sh"
+include "util/map.sh"
+
+function loc(){
+echo $(root)/builtin
+}
+
+function uiref(){
+export PS1="\u@\h: \033[36m\W\033[0m \033[33m<<<\033[32m$(_dw_query ts)\033[33m::\033[35m$(_dw_query vc)\033[33m>>>\033[0m \$ "
+}
+
+function ui(){
+_dw_store $1 $2 && uiref
+}
