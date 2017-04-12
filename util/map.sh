@@ -4,88 +4,102 @@
 # author: steven, date:2017.3.31
 # a kind of map implement writing in shell script language
 
+_include "util/collection.sh"
+_include "util/pair.sh"
+
+# manual
+function map_help(){
+cat << TIPS
+map [container] <order> [<args>]
+container: a memory var to store map's raw string
+order: del/put/eset/vset/kset/get/empty/clr/init
+args: ...
+TIPS
+echo
+}
+
 # remove the item tag with key
 function map_del(){
-echo $1 | sed "s/($2|[^)]*)//g";
+if [ $# ! -eq 2 ]; then
+return $__err_f_param
+fi
+echo $(collection $1 remove $(pair new $2 *))
 }
 
-# if item tag with key is exist, 
-# remove it, then 
-# append one to the head shipped with new value
+# update item's value tag with key
 function map_put(){
-local result=$(map_del $1 $2); echo ${result/#{/{($2|$3)};
+if [ $# ! -eq 3 ]; then
+return $__err_f_param
+fi
+# if item tag with key is exist, 
+# remove it, then append one to the head shipped with new value
+local r=$(map_del $1 $2); r=$(collection_add $r $(pair $2 $3)); echo $r
 }
 
-# remove all items except one tag with key, then
-# fetch the value of the item
+# fetch element set
+function map_eset(){
+if [ $# ! -eq 1 ]; then
+return $__err_f_param
+fi
+echo $(collection ${1:-$(collection new)} ls)
+}
+
+# fetch value set
+function map_vset(){
+if [ $# ! -eq 1 ]; then
+return $__err_f_param
+fi
+echo $(pair v $(map_eset $1))
+}
+
+# fetch key set
+function map_kset(){
+if [ $# ! -eq 1 ]; then
+return $__err_f_param
+fi
+echo $(pair k $(map_eset $1))
+}
+
+# fetch the value of the item tag with key
 function map_get(){
-local result=$(echo $1 | grep -o "($2|[^)]*)"); result=${result#(*|}; echo ${result%)};
+if [ $# ! -eq 2 ]; then
+return $__err_f_param
+fi
+echo $(pair v $(collection $1 ls $(pair new $2 *)))
 }
 
-# remove all items
-function map_clr(){
-echo "{}"
-}
-
-# if equals to result of clr order, return true
+# empty test
 function map_empty(){
-[ $1 == $(map_clr) ] && echo true || echo false
+if [ $# ! -eq 1 ]; then
+return $__err_f_param
+fi
+echo $(collection ${1:-$(collection new)} empty)
 }
 
-# map entry
+# clear
+function map_clr(){
+if [ $# ! -eq 1 ]; then
+return $__err_f_param
+fi
+echo $(collection new) # generate new collection
+}
+
+# init, the same as clear
+function map_init(){
+if [ $# ! -eq 0 ]; then
+return $__err_f_param
+fi
+echo $(map_clr)
+}
+
+# main entry
 function map(){
-# mapping container and order parameters, 
-# when raw parameter list has only one item, it must be "init", that is an order  
-local container=${1:-""}; local order=$([ $# -eq 1 ] && echo $container || echo ${2:-""})
-# calculate order parameters
-shift; shift
-
-# dispatch order
-local result=""
-
-while [ -z "$result" ]; do
-
-# no order to echo help tips
-if [ -z "$order" ]; then
-cat << TIPS
-error:invaild paraments... 
-usage:map container order <params...>
-container: a memory var to store map's raw string
-order: del/put/get/empty/clr/init
-params: ...
-TIPS
-break
-fi
-
-# del
-if [ "del" == "$order" -a $# -eq 1 ]; then
-result=$(map_del $container $1); break
-fi
-
-# put
-if [ "put" == "$order" -a $# -eq 2 ]; then
-result=$(map_put $container $1 $2); break
-fi
-
-# get
-if [ "get" == "$order" -a $# -eq 1 ]; then
-result=$(map_get $container $1); break
-fi
-
-# empty
-if [ "empty" == "$order" -a $# -eq 0 ]; then
-result=$(map_empty $container); break
-fi
-
-# clr, init is the same as clr order
-if [ "clr" == "$order" -o "init" == "$order" -a $# -eq 0 ]; then
-result=$(map_clr); break
-fi
-
-order="";
-
-done
-
-# result of map order
-echo "$result"
+# while the raw parameter list has a single item,
+# it must be "help" or "init", that is a rule
+# resolve parameter list
+local container=$([ "help" == "$1" -o "init" == "$1" ] && echo "" || echo ${1:-""})
+local order=$([ "help" == "$1" -o "init" == "$1" ] && echo $1 || echo ${2:-""})
+shift; shift # args for order
+# order execute
+_invoke_2c "map_$order $container $*" || map_help
 }

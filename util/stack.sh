@@ -4,85 +4,76 @@
 # author: steven, date:2017.3.31
 # a kind of stack implement writing in shell script language
 
+_include "util/collection.sh"
+
+# manual
+function stack_help(){
+cat << TIPS
+stack [container] <order> [<args>]
+container: a memory var to store stack's raw string
+order: o/pop/push/empty/clr/init
+args: ...
+TIPS
+}
 
 # fetch the value of the top item
 function stack_o(){
-local result=${1%%^*}; result=${result#{(}; echo ${result%)};
+if [ $# ! -eq 1 ]; then
+return $__err_f_param
+fi
+local r=${1%%^*} && r=${r#{(} && r=${r%)} && echo $r
 }
 
-# remove the top item
+# pop the top item
 function stack_pop(){
+if [ $# ! -eq 1 ]; then
+return $__err_f_param
+fi
+# remove the top item
 echo ${1/#{($(stack_o $1))^/{}
 }
 
-# append new item to the head of stack
+# push new item
 function stack_push(){
+if [ $# ! -eq 2 ]; then
+return $__err_f_param
+fi
+# append new item to the head of stack
 echo ${1/#{/{($2)^}
 }
 
-# remove all items
-function stack_clr(){
-echo "{}"
-}
-
-# if equals to result of clr order, return true
+# empty test
 function stack_empty(){
-[ $1 == $(stack_clr) ] && echo true || echo false
+if [ $# ! -eq 1 ]; then
+return $__err_f_param
+fi
+echo $(collection ${1:-$(collection new)} empty)
 }
 
-stack(){
-# mapping container and order parameters, 
-# when raw parameter list has only one item, it must be "init", that is an order
-local container=${1:-""}; local order=$([ $# -eq 1 ] && echo $container || echo ${2:-""})
-# calc params
-shift; shift
-
-# dispatch order
-local result=""
-
-while [ -z "$result" ]; do
-
-# no order to echo help tips
-if [ -z "$order" ]; then
-cat << TIPS
-error:invaild paraments... 
-usage:stack container order <params...>
-container: a memory var to store stack's raw string
-order: o/pop/push/empty/clr/init
-params: ...
-TIPS
-break
+# clear
+function stack_clr(){
+if [ $# ! -eq 1 ]; then
+return $__err_f_param
 fi
+echo $(collection new) # generate new collection
+}
 
-# o
-if [ "o" == "$order" -a $# -eq 0 ]; then
-result=$(stack_o $container); break
+# init, the same as clear
+function stack_init(){
+if [ $# ! -eq 0 ]; then
+return $__err_f_param
 fi
+echo $(stack_clr)
+}
 
-# pop
-if [ "pop" == "$order" -a $# -eq 0 ]; then
-result=$(stack_pop $container); break
-fi
-
-# push
-if [ "push" == "$order" -a $# -eq 1 ]; then
-result=$(stack_push $container $1); break
-fi
-
-# empty
-if [ "empty" == "$order" -a $# -eq 0 ]; then
-result=$(stack_empty $container); break
-fi
-
-# clr, init is the same as clr order
-if [ "clr" == "$order" -o "init" == "$order" -a $# -eq 0 ]; then
-result=$(stack_clr); break
-fi
-
-order=""
-
-done
-
-# return result of stack order
-echo "$result"
+# main entry
+function stack(){
+# while the raw parameter list has a single item,
+# it must be "help" or "init", that is a rule
+# resolve parameter list
+local container=$([ "help" == "$1" -o "init" == "$1" ] && echo "" || echo ${1:-""})
+local order=$([ "help" == "$1" -o "init" == "$1" ] && echo $1 || echo ${2:-""})
+shift; shift # args for order
+# order execute
+_invoke_2c "stack_$order $container $*" || stack_help
 }

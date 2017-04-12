@@ -1,46 +1,11 @@
 #!/bin/bash
 
-#author: steven, date:2017.3.31
+# des install script
+# author: steven, date:2017.3.31
 
-# des load an init
-# location calculate
-declare atloc=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)
+# location calculate 
+declare __anchor=${__anchor:=$(cd $(dirname "${BASH_SOURCE[0]}") && pwd)}
 
-#
-# infrastructure
-#
-# path of des's root
-function root(){
-echo $atloc
-}
-
-# function to due with module's import
-function include(){
-if [ -f "$(root)/$1" ]; then
-source "$(root)/$1"
-fi
-}
-
-#
-# main
-#
-# data for des, is a pool in memeory cache
-include "util/map.sh"; declare _des_ss_=$(map init)
-
-function _dw_purge(){
-_des_ss_=$(map ${_des_ss_} del $@)
-}
-function _dw_store(){
-_des_ss_=$(map ${_des_ss_} put $@)
-}
-function _dw_query(){
-local rt=$(map ${_des_ss_} get $@) && echo $rt
-}
-
-# cli alias for des
-for cli in $(ls $(root)/builtin/*.sh $(root)/*.sh 2> /dev/null); do
-c=$(basename $cli); alias ${c%.sh}="source $cli"
-done
-
-# des ready
-declare env_rp_path=${env_rp_path:=$PATH}; export PATH=$env_rp_path
+# main process
+# ready go
+source "$__anchor/builtin/desinit"
