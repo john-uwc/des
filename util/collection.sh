@@ -30,30 +30,54 @@ echo $r
 
 # calculate size
 function collection_size(){
-if [ $# ! -eq 1 ]; then
+if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
 echo $(collection_ls $1 | wc)
 }
 
-# remove element from collection, support regex
-function collection_remove(){
-if [ $# ! -eq 2 ]; then
+# fetch item at fix position
+function collection_at(){
+if [ $# -ne 2 ]; then
 return $__err_f_param
 fi
-local r=$1
-for i in $(collection_ls $1 $2); do
-r=$(echo $r | sed s/($i)//g)
+local r=""
+([ $2 -lt 0 ] || [ $2 -gt $(expr $(collection_size $1) - 1) ]) && return $__err_f_param
+local p=$2
+local pi=0
+for i in $(collection_ls $1); do
+[ $pi -eq $p ] && r=$i && break; pi=$(expr $pi+1)
 done
 echo $r
 }
 
-# add item to collection
-function collection_add(){
-if [ $# ! -eq 2 ]; then
+# remove item from collection at fix position
+function collection_remove(){
+if [ $# -ne 2 ]; then
 return $__err_f_param
 fi
-echo ${1/#{/{($2)}
+local r=""
+([ $2 -lt 0 ] || [ $2 -gt $(expr $(collection_size $1) - 1) ]) && return $__err_f_param
+local p=$2
+local pi=0
+for i in $(collection_ls $1); do
+[ $pi -ne $p ] && r=$r"($i)" pi=$(expr $pi+1)
+done
+echo {$r}
+}
+
+# insert item to collection, position should be deliver to insert
+function collection_insert(){
+if [ $# -lt 2 -o $# -gt 3 ]; then
+return $__err_f_param
+fi
+local r=""
+local p=${3:=-1}; local csz=$(collection_size $1); [ $p -lt -1 ] && p=-1 || [ $p -gt $csz ] && p=$csz
+local pi=-1
+for i in $(collection_ls $1); do
+[ $pi -eq $p ] && r=$r"($2)"; r=$r"($i)"; pi=$(expr $pi+1)
+done
+echo {$r}
 }
 
 # empty test

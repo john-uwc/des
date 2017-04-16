@@ -9,14 +9,14 @@ function pair_help(){
 cat << TIPS
 pair <order> <container | [<args>]>
 container: a memory var to store pair's raw string
-order: k/v/new
+order: new/k/v
 args: ...
 TIPS
 }
 
 # new a key value pair
 function pair_new(){
-if [ $# ! -eq 2 ]; then
+if [ $# -ne 2 ]; then
 return $__err_f_param
 fi
 echo "$1|$2"

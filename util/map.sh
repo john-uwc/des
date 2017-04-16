@@ -20,25 +20,25 @@ echo
 
 # remove the item tag with key
 function map_del(){
-if [ $# ! -eq 2 ]; then
+if [ $# -ne 2 ]; then
 return $__err_f_param
 fi
-echo $(collection $1 remove $(pair new $2 *))
+echo $(collection $1 remove $(pair new $2 .*))
 }
 
 # update item's value tag with key
 function map_put(){
-if [ $# ! -eq 3 ]; then
+if [ $# -ne 3 ]; then
 return $__err_f_param
 fi
 # if item tag with key is exist, 
 # remove it, then append one to the head shipped with new value
-local r=$(map_del $1 $2); r=$(collection_add $r $(pair $2 $3)); echo $r
+local r=$(map_del $1 $2); r=$(collection $r insert $(pair $2 $3)); echo $r
 }
 
 # fetch element set
 function map_eset(){
-if [ $# ! -eq 1 ]; then
+if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
 echo $(collection ${1:-$(collection new)} ls)
@@ -46,7 +46,7 @@ echo $(collection ${1:-$(collection new)} ls)
 
 # fetch value set
 function map_vset(){
-if [ $# ! -eq 1 ]; then
+if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
 echo $(pair v $(map_eset $1))
@@ -54,7 +54,7 @@ echo $(pair v $(map_eset $1))
 
 # fetch key set
 function map_kset(){
-if [ $# ! -eq 1 ]; then
+if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
 echo $(pair k $(map_eset $1))
@@ -62,7 +62,7 @@ echo $(pair k $(map_eset $1))
 
 # fetch the value of the item tag with key
 function map_get(){
-if [ $# ! -eq 2 ]; then
+if [ $# -ne 2 ]; then
 return $__err_f_param
 fi
 echo $(pair v $(collection $1 ls $(pair new $2 *)))
@@ -70,7 +70,7 @@ echo $(pair v $(collection $1 ls $(pair new $2 *)))
 
 # empty test
 function map_empty(){
-if [ $# ! -eq 1 ]; then
+if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
 echo $(collection ${1:-$(collection new)} empty)
@@ -78,7 +78,7 @@ echo $(collection ${1:-$(collection new)} empty)
 
 # clear
 function map_clr(){
-if [ $# ! -eq 1 ]; then
+if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
 echo $(collection new) # generate new collection
@@ -86,7 +86,7 @@ echo $(collection new) # generate new collection
 
 # init, the same as clear
 function map_init(){
-if [ $# ! -eq 0 ]; then
+if [ $# -ne 0 ]; then
 return $__err_f_param
 fi
 echo $(map_clr)

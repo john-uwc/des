@@ -18,33 +18,33 @@ TIPS
 
 # fetch the value of the top item
 function stack_o(){
-if [ $# ! -eq 1 ]; then
+if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-local r=${1%%^*} && r=${r#{(} && r=${r%)} && echo $r
+echo $(collection $1 at 0)
 }
 
 # pop the top item
 function stack_pop(){
-if [ $# ! -eq 1 ]; then
+if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
 # remove the top item
-echo ${1/#{($(stack_o $1))^/{}
+echo $(collection $1 remove 0)
 }
 
 # push new item
 function stack_push(){
-if [ $# ! -eq 2 ]; then
+if [ $# -ne 2 ]; then
 return $__err_f_param
 fi
 # append new item to the head of stack
-echo ${1/#{/{($2)^}
+echo $(collection $1 insert $2)
 }
 
 # empty test
 function stack_empty(){
-if [ $# ! -eq 1 ]; then
+if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
 echo $(collection ${1:-$(collection new)} empty)
@@ -52,7 +52,7 @@ echo $(collection ${1:-$(collection new)} empty)
 
 # clear
 function stack_clr(){
-if [ $# ! -eq 1 ]; then
+if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
 echo $(collection new) # generate new collection
@@ -60,7 +60,7 @@ echo $(collection new) # generate new collection
 
 # init, the same as clear
 function stack_init(){
-if [ $# ! -eq 0 ]; then
+if [ $# -ne 0 ]; then
 return $__err_f_param
 fi
 echo $(stack_clr)
