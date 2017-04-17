@@ -4,27 +4,57 @@
 # author: steven, date:2017.4.12
 # a kind of collection implement writing in shell script language
 
+_include "util/pair.sh"
+
 # manual
 function collection_help(){
 cat << TIPS
 collection [container] <order> [<args>]
 container: a memory var to store collection's raw string
-order: new/ls/size/remove/add/empty
+order: clr/at/ls/size/remove/insert/empty
 args: ...
 TIPS
 }
 
-# new collection
-function collection_new(){
-echo "{}"
-}
-
-# as list, support regex selector
-function collection_ls(){
-if [ $# -lt 2 -o $# -gt 3 ]; then
+# clear with items
+function collection_clr(){
+if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-# TODO: list collection items
+shift
+local r="{"
+for i in "$@"; do
+r=$r"($i)" 
+done
+r=$r"}" && echo $r
+}
+
+# fetch items in the collection at a group of fix position,
+# if not any fix position, the all items should be hit
+function collection_at(){
+if [ $# -lt 1]; then
+return $__err_f_param
+fi
+local cls=$(echo $1 \
+| perl -e '$l=<>;  $l =~ s/\(((?'it'\()|(?'−it'\))|[^\(\)])*(?(it)(?!))\)/ $1 /g; print "$l\n"')
+shift
+local r=$cls
+if [ $# -gt 0 ]; then
+r=""; for i in "$@"; do r=$r${cls[$i]}; done
+fi
+echo $r
+}
+
+# as a list according to a selector, which could be null or a regular expression
+function collection_ls(){
+if [ $# -lt 2 ]; then
+return $__err_f_param
+fi
+local r=""
+local p=-1
+for i in $(collection_at $1); do
+p=$(($p + 1)); [ $i ~= ${2:-.*} ] && r="$r $(pair new $p $i) "
+done
 echo $r
 }
 
@@ -33,56 +63,36 @@ function collection_size(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-echo $(collection_ls $1 | wc)
+local r=$(collection_at $1) && echo ${#r[@]}
 }
 
-# fetch item at fix position
-function collection_at(){
-if [ $# -ne 2 ]; then
-return $__err_f_param
-fi
-local r=""
-([ $2 -lt 0 ] || [ $2 -gt $(expr $(collection_size $1) - 1) ]) && return $__err_f_param
-local p=$2
-local pi=0
-for i in $(collection_ls $1); do
-[ $pi -eq $p ] && r=$i && break; pi=$(expr $pi+1)
-done
-echo $r
-}
 
-# remove item from collection at fix position
+# remove items from collection at a group of fix position
 function collection_remove(){
 if [ $# -ne 2 ]; then
 return $__err_f_param
 fi
-local r=""
-([ $2 -lt 0 ] || [ $2 -gt $(expr $(collection_size $1) - 1) ]) && return $__err_f_param
-local p=$2
-local pi=0
-for i in $(collection_ls $1); do
-[ $pi -ne $p ] && r=$r"($i)" pi=$(expr $pi+1)
+local r=$(collection_at $1)
+for i in "$@"; do
+unset r[$i]
 done
-echo {$r}
+echo $(collection_clr $1 ${r[@]})
 }
 
-# insert item to collection, position should be deliver to insert
+# insert item to collection at fix position
 function collection_insert(){
-if [ $# -lt 2 -o $# -gt 3 ]; then
+if [ $# -ne 3 ]; then
 return $__err_f_param
 fi
-local r=""
-local p=${3:=-1}; local csz=$(collection_size $1); [ $p -lt -1 ] && p=-1 || [ $p -gt $csz ] && p=$csz
-local pi=-1
-for i in $(collection_ls $1); do
-[ $pi -eq $p ] && r=$r"($2)"; r=$r"($i)"; pi=$(expr $pi+1)
-done
-echo {$r}
+local p=$3; [ $p -lt $(collection_size $1) -a $p -gt -1 ] && p=$(($p-0.5))
+local r=$(collection_at $1)
+r[$p]=$2
+echo $(collection_clr $1 ${r[@]})
 }
 
 # empty test
 function collection_empty(){
-[ $1 == $(collection_new) ] && echo true || echo false # if equals to a new collection, return true, otherwise false
+[ $1 == $(collection_clr "{}") ] && echo true || echo false # if equals to a new collection, return true, otherwise false
 }
 
 # main entry
@@ -90,9 +100,9 @@ function collection(){
 # while the raw parameter list has a single item,
 # it must be "help" or "new", that is a rule
 # resolve parameter list
-local container=$([ "help" == "$1" -o "new" == "$1" ] && echo "" || echo ${1:-""})
-local order=$([ "help" == "$1" -o "new" == "$1" ] && echo $1 || echo ${2:-""})
+local container=$([ "help" == "$1" ] && echo "" || echo ${1:-""})
+local order=$([ "help" == "$1" ] && echo $1 || echo ${2:-""})
 shift; shift # args for order
 # order execute
-_invoke_2c "collection_$order $container $*" || collection_help
+_invoke_2c collection_$order $container $* || collection_help
 }

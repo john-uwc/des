@@ -12,28 +12,40 @@ function map_help(){
 cat << TIPS
 map [container] <order> [<args>]
 container: a memory var to store map's raw string
-order: del/put/eset/vset/kset/get/empty/clr/init
+order: del/put/vset/eset/kset/get/empty/clr/init
 args: ...
 TIPS
 echo
 }
 
-# remove the item tag with key
+# remove the element tag with key
 function map_del(){
 if [ $# -ne 2 ]; then
 return $__err_f_param
 fi
-echo $(collection $1 remove $(pair new $2 .*))
+local r=$(collection $1 ls $(pair new $2 .*))
+r=$(pair k $r)
+echo $(collection $1 remove $r)
 }
 
-# update item's value tag with key
+# update element's value tag with key
 function map_put(){
 if [ $# -ne 3 ]; then
 return $__err_f_param
 fi
 # if item tag with key is exist, 
 # remove it, then append one to the head shipped with new value
-local r=$(map_del $1 $2); r=$(collection $r insert $(pair $2 $3)); echo $r
+local r=$(map_del $1 $2)
+r=$(collection $r insert $(pair $2 $3) 0)
+echo $r
+}
+
+# element value set
+function map_vset(){
+if [ $# -ne 1 ]; then
+return $__err_f_param
+fi
+local r=$(map_eset $1) && echo $(pair v $r) 
 }
 
 # fetch element set
@@ -41,31 +53,25 @@ function map_eset(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-echo $(collection ${1:-$(collection new)} ls)
+local r=$(collection $1 at) && echo $r
 }
 
-# fetch value set
-function map_vset(){
-if [ $# -ne 1 ]; then
-return $__err_f_param
-fi
-echo $(pair v $(map_eset $1))
-}
-
-# fetch key set
+# element key set
 function map_kset(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-echo $(pair k $(map_eset $1))
+local r=$(map_eset $1) && echo $(pair k $r) 
 }
 
-# fetch the value of the item tag with key
+# fetch the value of the element tag with key
 function map_get(){
 if [ $# -ne 2 ]; then
 return $__err_f_param
 fi
-echo $(pair v $(collection $1 ls $(pair new $2 *)))
+local r=$(collection $1 ls $(pair new $2 .*))
+r=$(pair v $r) && r=$(pair v $r)
+echo $r
 }
 
 # empty test
@@ -73,7 +79,7 @@ function map_empty(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-echo $(collection ${1:-$(collection new)} empty)
+echo $(collection $1 empty)
 }
 
 # clear
@@ -81,15 +87,12 @@ function map_clr(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-echo $(collection new) # generate new collection
+echo $(collection $1 clr) # generate new collection for map
 }
 
 # init, the same as clear
 function map_init(){
-if [ $# -ne 0 ]; then
-return $__err_f_param
-fi
-echo $(map_clr)
+echo $(map_clr "{}")
 }
 
 # main entry
@@ -101,5 +104,5 @@ local container=$([ "help" == "$1" -o "init" == "$1" ] && echo "" || echo ${1:-"
 local order=$([ "help" == "$1" -o "init" == "$1" ] && echo $1 || echo ${2:-""})
 shift; shift # args for order
 # order execute
-_invoke_2c "map_$order $container $*" || map_help
+_invoke_2c map_$order $container $* || map_help
 }

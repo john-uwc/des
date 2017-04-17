@@ -28,4 +28,4 @@ local br=$((invoke_2c "git branch") | grep \* | cut -c3-) && hint "vc" "${br:---
 
 
 # main
-([ $# -lt 1 ] && help || _invoke_2c "$sys $*") && st_$sys
+([ $# -lt 1 ] && help || _invoke_2c $sys $*) && st_$sys
