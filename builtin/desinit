@@ -11,7 +11,7 @@ declare -i __err_f_param=3
 
 # routine invoke with err ignore
 function _invoke_2c(){
-$* 2> /dev/null
+local c=$1 && shift && $c "$@" 2> /dev/null
 }
 
 # des's cache

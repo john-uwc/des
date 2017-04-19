@@ -23,7 +23,7 @@ HELP
 
 # calculate status of current git repos
 function st_git(){
-local br=$((invoke_2c "git branch") | grep \* | cut -c3-) && hint "vc" "${br:----}"
+local br=$((_invoke_2c git branch) | grep \* | cut -c3-) && hint "vc" "${br:----}"
 }
 
 

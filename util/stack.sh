@@ -21,7 +21,7 @@ function stack_o(){
 if [ $# -ne 1 -o "true" == "$(stack_empty $1)" ]; then
 return $__err_f_param
 fi
-echo $(collection $1 at 0)
+echo $(collection "$1" at 0)
 }
 
 # pop the top element
@@ -29,7 +29,7 @@ function stack_pop(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-echo $(collection $1 remove 0) # remove the top element
+echo $(collection "$1" remove 0) # remove the top element
 }
 
 # push new element
@@ -37,7 +37,7 @@ function stack_push(){
 if [ $# -ne 2 ]; then
 return $__err_f_param
 fi
-echo $(collection $1 insert $2 0) # append new element to the head of stack
+echo $(collection "$1" insert "$2" 0) # append new element to the head of stack
 }
 
 # empty test
@@ -45,7 +45,7 @@ function stack_empty(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-echo $(collection $1 empty)
+echo $(collection "$1" empty)
 }
 
 # clear
@@ -53,7 +53,7 @@ function stack_clr(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-echo $(collection $1 clr) # generate new collection for stack
+echo $(collection "$1" clr) # generate new collection for stack
 }
 
 # init, the same as clear
@@ -70,5 +70,5 @@ local container=$([ "help" == "$1" -o "init" == "$1" ] && echo "" || echo ${1:-"
 local order=$([ "help" == "$1" -o "init" == "$1" ] && echo $1 || echo ${2:-""})
 shift; shift # args for order
 # order execute
-_invoke_2c stack_$order $container $* || stack_help
+_invoke_2c "stack_$order" "$container" "$@" || stack_help
 }

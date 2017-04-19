@@ -23,9 +23,9 @@ function map_del(){
 if [ $# -ne 2 ]; then
 return $__err_f_param
 fi
-local r=$(collection $1 ls $(pair new $2 .*))
-r=$(pair k $r)
-echo $(collection $1 remove $r)
+local r=$(collection "$1" ls $(pair new "$2" \*))
+r=$(pair k ''$r)
+echo $(collection $1 remove ''$r)
 }
 
 # update element's value tag with key
@@ -35,9 +35,9 @@ return $__err_f_param
 fi
 # if item tag with key is exist, 
 # remove it, then append one to the head shipped with new value
-local r=$(map_del $1 $2)
-r=$(collection $r insert $(pair $2 $3) 0)
-echo $r
+local r=$(map_del "$1" "$2")
+r=$(collection $r insert $(pair new "$2" "$3") 0)
+echo "$r"
 }
 
 # element value set
@@ -45,7 +45,7 @@ function map_vset(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-local r=$(map_eset $1) && echo $(pair v $r) 
+local r=$(map_eset "$1") && echo $(pair v ''$r)
 }
 
 # fetch element set
@@ -53,7 +53,7 @@ function map_eset(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-local r=$(collection $1 at) && echo $r
+local r=$(collection "$1" at) && echo "$r"
 }
 
 # element key set
@@ -61,7 +61,7 @@ function map_kset(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-local r=$(map_eset $1) && echo $(pair k $r) 
+local r=$(map_eset "$1") && echo $(pair k ''$r)
 }
 
 # fetch the value of the element tag with key
@@ -69,9 +69,9 @@ function map_get(){
 if [ $# -ne 2 ]; then
 return $__err_f_param
 fi
-local r=$(collection $1 ls $(pair new $2 .*))
-r=$(pair v $r) && r=$(pair v $r)
-echo $r
+local r=$(collection "$1" ls $(pair new "$2" \*))
+r=$(pair v ''$r) && r=$(pair v ''$r)
+echo "$r"
 }
 
 # empty test
@@ -79,7 +79,7 @@ function map_empty(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-echo $(collection $1 empty)
+echo $(collection "$1" empty)
 }
 
 # clear
@@ -87,7 +87,7 @@ function map_clr(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-echo $(collection $1 clr) # generate new collection for map
+echo $(collection "$1" clr) # generate new collection for map
 }
 
 # init, the same as clear
@@ -104,5 +104,5 @@ local container=$([ "help" == "$1" -o "init" == "$1" ] && echo "" || echo ${1:-"
 local order=$([ "help" == "$1" -o "init" == "$1" ] && echo $1 || echo ${2:-""})
 shift; shift # args for order
 # order execute
-_invoke_2c map_$order $container $* || map_help
+_invoke_2c "map_$order" "$container" "$@" || map_help
 }

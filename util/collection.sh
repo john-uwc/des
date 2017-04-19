@@ -18,7 +18,7 @@ TIPS
 
 # clear with items
 function collection_clr(){
-if [ $# -ne 1 ]; then
+if [ $# -lt 1 ]; then
 return $__err_f_param
 fi
 shift
@@ -26,7 +26,7 @@ local r="{"
 for i in "$@"; do
 r=$r"($i)" 
 done
-r=$r"}" && echo $r
+r=$r"}" && echo "$r"
 }
 
 # fetch items in the collection at a group of fix position,
@@ -35,27 +35,27 @@ function collection_at(){
 if [ $# -lt 1]; then
 return $__err_f_param
 fi
-local cls=$(echo $1 \
-| perl -e '$l=<>;  $l =~ s/\(((?'it'\()|(?'−it'\))|[^\(\)])*(?(it)(?!))\)/ $1 /g; print "$l\n"')
+local cls=$(echo "$1" \
+| perl -e '@l= <>=~/(?x)\((([^\(\)]*|\((?1)\))*)\)/g; print "@l\n"')
 shift
 local r=$cls
 if [ $# -gt 0 ]; then
 r=""; for i in "$@"; do r=$r${cls[$i]}; done
 fi
-echo $r
+echo "$r"
 }
 
 # as a list according to a selector, which could be null or a regular expression
 function collection_ls(){
-if [ $# -lt 2 ]; then
+if [ $# -lt 1 ]; then
 return $__err_f_param
 fi
 local r=""
 local p=-1
-for i in $(collection_at $1); do
-p=$(($p + 1)); [ $i ~= ${2:-.*} ] && r="$r $(pair new $p $i) "
+for i in $(collection_at "$1"); do
+p=$[p+1]; [ -z ${i/${2:-*}/} ] && r="$r $(pair new $p $i) "
 done
-echo $r
+echo "$r"
 }
 
 # calculate size
@@ -63,20 +63,20 @@ function collection_size(){
 if [ $# -ne 1 ]; then
 return $__err_f_param
 fi
-local r=$(collection_at $1) && echo ${#r[@]}
+local r=($(collection_at "$1")) && echo ${#r[@]}
 }
-
 
 # remove items from collection at a group of fix position
 function collection_remove(){
-if [ $# -ne 2 ]; then
+if [ $# -lt 2 ]; then
 return $__err_f_param
 fi
-local r=$(collection_at $1)
+local r=($(collection_at "$1"))
+local o=$1; shift
 for i in "$@"; do
 unset r[$i]
 done
-echo $(collection_clr $1 ${r[@]})
+echo $(collection_clr "$o" ${r[@]})
 }
 
 # insert item to collection at fix position
@@ -84,10 +84,14 @@ function collection_insert(){
 if [ $# -ne 3 ]; then
 return $__err_f_param
 fi
-local p=$3; [ $p -lt $(collection_size $1) -a $p -gt -1 ] && p=$(($p-0.5))
-local r=$(collection_at $1)
-r[$p]=$2
-echo $(collection_clr $1 ${r[@]})
+local r=($(collection_at "$1"))
+local i=$3; [ $i -lt 0 ] && i=0 || [ $i -gt ${#r[@]} ] && i=${#r[@]}
+local p=${#r[@]}
+while [ $p -ne $i ]; do
+p=$[p-1] && r[$[p+1]]=${r[$p]}
+done
+r[$i]=$2
+echo $(collection_clr "$1" ${r[@]})
 }
 
 # empty test
@@ -104,5 +108,5 @@ local container=$([ "help" == "$1" ] && echo "" || echo ${1:-""})
 local order=$([ "help" == "$1" ] && echo $1 || echo ${2:-""})
 shift; shift # args for order
 # order execute
-_invoke_2c collection_$order $container $* || collection_help
+_invoke_2c "collection_$order" "$container" "$@" || collection_help
 }
