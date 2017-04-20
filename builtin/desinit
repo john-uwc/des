@@ -42,7 +42,7 @@ _dw_c=$(map $_dw_c put "$@")
 }
 # select op
 function _dw_query(){
-echo "$(map $_dw_c get "$@")"
+local r=$(map $_dw_c get "$1") && echo ${r:-"$2"}
 }
 
 

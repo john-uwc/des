@@ -16,41 +16,44 @@ HELP
 }
 
 # perform export path and fresh hint 
-function handle(){
+function commit(){
 local hr="" && local pr=$_rp_envpath
 for p in $(map $1 eset); do
 pr="$pr:$(pair v $p)" && hr="$hr,$(pair k $p)"
 done
-PATH=$pr && hint "ts" $hr
+PATH=$pr && hint "ts" "$hr"
 }
 
 # pick from cache
-function pck_c(){
+function pick(){
 echo $(_cache)/ts.m/$1
 }
 
-
 # main
-order=${1:-""}; shift
+order=${1:-""}
+shift
 
-[ "help" == "$order" ] && help && return $__err_s_ # with help
+# with help
+[ "help" == "$order" ] && help && return $__err_s_
 
 # begin calculate, query current
-declare result=$(_dw_query sts); [ -z $result ] && result=$(map init)
+declare result=$(_dw_query "sts" $(map init))
 
 # trw
-if [ "trw" == "$order" -a $# -eq 1 ]; then
-result=$(map $result del $1)
+if [ "trw" == "$order" ]; then
+[ $# -ne 1 ] && return $__err_f_param
+result=$(map "$result" del "$1")
 fi
 
 # pck
-if [ "pck" == "$order" -a $# -le 2 -a -n "$1" ]; then
-if [ -d "$2" ]; then
-result=$(map $result put $1 $(cd $2 && pwd))
-elif [ -d $(pck_c $1) ]; then
-result=$(map $result put $1 $(pck_c $1))
+if [ "pck" == "$order" ]; then
+[ $# -gt 2 -o -z "$1" ] && return $__err_f_param
+if [ -n "$2" -a -d "$2" ]; then
+result=$(map "$result" put "$1" $(cd "$2" && pwd))
+else
+t=$(pick "$1") && [ -d "$t" ] && result=$(map "$result" put "$1" "$t")
 fi
 fi
 
 # calculate finish, do handle
-handle $result && _dw_store sts $result
+commit "$result" && _dw_store "sts" "$result"
