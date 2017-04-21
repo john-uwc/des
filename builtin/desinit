@@ -16,7 +16,7 @@ local c=$1 && shift && $c "$@" 2> /dev/null
 
 # des's cache
 function _cache(){
-echo ${__des_cache:="~/.des"}
+echo ${__des_cache:=~/.des}
 }
 
 # des's root

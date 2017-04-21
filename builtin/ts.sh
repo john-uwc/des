@@ -26,7 +26,7 @@ PATH=$pr && hint "ts" "$hr"
 
 # pick from cache
 function pick(){
-echo $(_cache)/ts.m/$1
+local r=$(_cache)/ts.m/$1 && [ -d "$r" ] && echo $(cd "$r" && pwd)
 }
 
 # main
@@ -51,7 +51,7 @@ if [ "pck" == "$order" ]; then
 if [ -n "$2" -a -d "$2" ]; then
 result=$(map "$result" put "$1" $(cd "$2" && pwd))
 else
-t=$(pick "$1") && [ -d "$t" ] && result=$(map "$result" put "$1" "$t")
+t=$(pick "$1") && [ -n "$t" -a -d "$t" ] && result=$(map "$result" put "$1" "$t")
 fi
 fi
 
