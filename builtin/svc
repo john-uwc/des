@@ -1,0 +1,32 @@
+#!/bin/bash
+
+# author: steven, date: 2017.4.25
+# service internal routine
+
+_include "etc/init.rc"
+
+# cache directory
+function _cache(){
+echo ${__des_cache:=~/.des}
+}
+
+
+# runtime data warehouse
+_include "util/map.sh"
+unset _dw_c && _dw_c=$(map init)
+# delete op
+function _dw_purge(){
+[ $# -ne 1 ] && return $__err_f_param
+_dw_c=$(map $_dw_c del "$1") && _loop "$1"
+}
+# insert or update op
+function _dw_store(){
+[ $# -ne 2 ] && return $__err_f_param
+_dw_c=$(map $_dw_c put "$1" "$2") && _loop "$1"
+}
+# select op
+function _dw_query(){
+[ $# -gt 2 ] && return $__err_f_param
+local r=$(map $_dw_c get "$1")
+echo ${r:-"$2"}
+}

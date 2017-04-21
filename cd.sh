@@ -2,10 +2,9 @@
 
 #author: steven, date: 2017.3.31
 
-# handle with normal change directory routine
-unalias cd 2> /dev/null
-cd "$@"
-alias cd="source $(_root)/cd.sh"
+_include "util/pair.sh"
 
-# intelligent
-role 1> /dev/null
+# handle with normal change directory routine
+_invoke_2c "unalias" "cd"
+eb=$(pwd); cd "$@"; ea=$(pwd); _dw_store "cd" $(pair new "$ea" "$eb")
+_invoke_2c "alias" "cd=source $(_root)/cd.sh"

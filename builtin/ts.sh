@@ -3,7 +3,6 @@
 #author: steven, date: 2017.3.31
 
 _include "util/map.sh"
-_include "p/hint.sh"
 
 # help tips
 function help(){
@@ -17,11 +16,11 @@ HELP
 
 # perform export path and fresh hint 
 function commit(){
-local hr="" && local pr=$_rp_envpath
-for p in $(map $1 eset); do
-pr="$pr:$(pair v $p)" && hr="$hr,$(pair k $p)"
+local p="";
+for e in $(map "$1" eset); do
+p="$p:$(pair v $e)"
 done
-PATH=$pr && hint "ts" "$hr"
+export PATH=${_rp_envpath}$p
 }
 
 # pick from cache
@@ -31,13 +30,14 @@ local r=$(_cache)/ts.m/$1 && [ -d "$r" ] && echo $(cd "$r" && pwd)
 
 # main
 order=${1:-""}
+
 shift
 
 # with help
 [ "help" == "$order" ] && help && return $__err_s_
 
 # begin calculate, query current
-declare result=$(_dw_query "sts" $(map init))
+declare result=$(_dw_query "ts" $(map init))
 
 # trw
 if [ "trw" == "$order" ]; then
@@ -56,4 +56,4 @@ fi
 fi
 
 # calculate finish, do handle
-commit "$result" && _dw_store "sts" "$result"
+commit "$result" && _dw_store "ts" "$result"

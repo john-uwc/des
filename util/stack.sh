@@ -10,7 +10,7 @@ _include "util/collection.sh"
 function stack_help(){
 cat << TIPS
 stack [container] <order> [<args>]
-container: a memory var to store stack's raw string
+container: a memory var to store raw string of stack
 order: o/pop/push/empty/clr/init
 args: ...
 TIPS

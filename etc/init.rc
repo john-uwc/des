@@ -1,1 +1,26 @@
-# __des_cache=~/.des
+# misc defination
+#__des_cache=~/.des
+
+
+
+# hook routine to handle event
+_include "p/hint.sh"
+# vc event
+function vc_(){
+hint "vc" $(_dw_query "vc")
+}
+
+# ts event
+function ts_(){
+local tips=""
+for e in $(map $(_dw_query ts) kset); do 
+tips="$tips,$e"
+done
+hint "ts" "$tips"
+}
+ 
+# cd event
+_include "util/stack.sh"
+function cd_(){
+_invoke_1c "source $(_root)/builtin/vc.sh"
+}

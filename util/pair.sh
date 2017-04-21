@@ -8,7 +8,7 @@
 function pair_help(){
 cat << TIPS
 pair <order> <container | [<args>]>
-container: a memory var to store pair's raw string
+container: a memory var to store raw string of pair
 order: new/k/v
 args: ...
 TIPS

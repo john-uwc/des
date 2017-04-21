@@ -1,0 +1,9 @@
+#!/bin/bash
+
+# author: steven, date:2017.4.12
+# des's cli
+
+clis=$(_invoke_2c "ls $(_root)/builtin/*.sh $(_root)/*.sh")
+for cli in $clis; do
+ci=$(basename $cli); alias ${ci%.sh}="source $cli"
+done

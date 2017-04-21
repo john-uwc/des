@@ -4,11 +4,18 @@
 
 # post prompt sign
 function prompt(){
-export PS1="\u@\h: \033[36m\W\033[0m \033[33m<<<\033[32m$(_dw_query ts)\033[33m::\033[35m$(_dw_query vc)\033[33m>>>\033[0m \$ "
+if [ $# -ne 1 ]; then
+return $__err_f_param
+fi
+local svc=$(map "$1" get vc)
+local tcs=$(map "$1" get ts)
+export PS1="\u@\h: \033[36m\W\033[0m \033[33m<<<\033[32m${tcs}\033[33m::\033[35m${svc}\033[33m>>>\033[0m \$ "
 }
 
 
 # main
 function hint(){
-_dw_store "$1" "$2" && prompt
+local uic=$(_dw_query "ui"); [ -z "$uic" ] && uic=$(map init)
+uic=$(map "$uic" put "$1" "$2") && prompt "$uic"
+_dw_store "ui" "$uic"
 }

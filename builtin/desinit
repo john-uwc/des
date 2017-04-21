@@ -2,63 +2,26 @@
 
 # init script
 # author: steven, date:2017.4.12
-# sys defination, core internal routine, init process
-
-# error code defination
-declare -i __err_s_=0
-declare -i __err_f_nosys=9
-declare -i __err_f_param=3
-
-# routine invoke with err ignore
-function _invoke_2c(){
-local c=$1 && shift && $c "$@" 2> /dev/null
-}
-
-# des's cache
-function _cache(){
-echo ${__des_cache:=~/.des}
-}
+# process of des init
 
 # des's root
 function _root(){
 echo $__anchor
 }
 
-# module's import
+# module's import relative to des's root
 function _include(){
 [ -f "$(_root)/$1" ] && source "$(_root)/$1"
 }
 
-# des runtime data warehouse
-_include "util/map.sh"
-
-# delete op
-function _dw_purge(){
-_dw_c=$(map $_dw_c del "$@")
-}
-# insert or update op
-function _dw_store(){
-_dw_c=$(map $_dw_c put "$@")
-}
-# select op
-function _dw_query(){
-local r=$(map $_dw_c get "$1") && echo ${r:-"$2"}
-}
-
 
 # main process
-[ -z ${__anchor} ] && return $__err_f_nosys
-
-_include "etc/init.rc"
-
-# restore point calc, then restore
-declare _rp_envpath=${_rp_envpath:=$PATH} && PATH=${_rp_envpath}
-
-# clear data
-unset _dw_c && _dw_c=$(map init)
-
-# load des's cli
-clis=$(_invoke_2c "ls $(_root)/builtin/*.sh $(_root)/*.sh")
-for cli in $clis; do
-ci=$(basename $cli); alias ${ci%.sh}="source $cli"
-done
+if [ -z "$(_root)" ]; then # env vaildate
+return -1
+fi
+# restore point calc
+declare _rp_envpath=${_rp_envpath:-$PATH}
+# 1s start des core, 2s start service for des, 3s load cli of des
+_include "builtin/core" && _include "builtin/svc" && _include "builtin/sh"
+# do restore point recover
+export PATH=${_rp_envpath}

@@ -11,7 +11,7 @@ _include "util/pair.sh"
 function map_help(){
 cat << TIPS
 map [container] <order> [<args>]
-container: a memory var to store map's raw string
+container: a memory var to store raw string of map
 order: del/put/vset/eset/kset/get/empty/clr/init
 args: ...
 TIPS

@@ -2,8 +2,6 @@
 
 #author: steven, date: 2017.3.31
 
-_include "p/hint.sh"
-
 # distinguish the current vc system
 function distsys(){
 # git is the only support cvs now, the others may be support later
@@ -23,7 +21,8 @@ HELP
 
 # calculate status of current git repos
 function st_git(){
-local br=$((_invoke_2c git branch) | grep \* | cut -c3-) && hint "vc" "${br:----}"
+local br=$((_invoke_2c git branch) | grep \* | cut -c3-)
+_dw_store "vc" "${br:----}"
 }
 
 

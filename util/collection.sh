@@ -10,7 +10,7 @@ _include "util/pair.sh"
 function collection_help(){
 cat << TIPS
 collection [container] <order> [<args>]
-container: a memory var to store collection's raw string
+container: a memory var to store raw string of collection
 order: clr/at/ls/size/remove/insert/empty
 args: ...
 TIPS
