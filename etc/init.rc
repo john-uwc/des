@@ -1,5 +1,5 @@
-# misc defination
-#__des_cache=~/.des
+# cache directory
+des_cache=~/.des
 
 # hook routine to handle event
 _include "p/hint.sh"
@@ -31,3 +31,7 @@ _include "util/stack.sh"
 function cd_(){
 _invoke_1c "source $(_root)/builtin/vc.sh"
 }
+
+### misc definition ###
+source ~/.des/rc
+

@@ -5,12 +5,6 @@
 
 _include "etc/init.rc"
 
-# cache directory
-function _cache(){
-echo ${__des_cache:=~/.des}
-}
-
-
 # runtime data warehouse
 _include "util/map.sh"
 unset _dw_c && _dw_c=$(map init)
@@ -30,3 +24,4 @@ function _dw_query(){
 local r=$(map $_dw_c get "$1")
 echo ${r:-"$2"}
 }
+
