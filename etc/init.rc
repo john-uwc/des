@@ -1,10 +1,17 @@
 # misc defination
 #__des_cache=~/.des
 
-
-
 # hook routine to handle event
 _include "p/hint.sh"
+
+# post prompt sign
+function ui_(){
+local uic=$(_dw_query "ui")
+local svc=$(map $uic get vc)
+local tcs=$(map $uic get ts)
+export PS1="\u@\h: \033[36m\W\033[0m \033[33m<<<\033[32m${tcs}\033[33m::\033[35m${svc}\033[33m>>>\033[0m \$ "
+}
+
 # vc event
 function vc_(){
 hint "vc" $(_dw_query "vc")
