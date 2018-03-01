@@ -16,6 +16,6 @@ echo "git"
 
 # main
 _invoke_2c "unalias" "$_vc_sys"
-_vc_sys=$(distsys); _invoke_2c "$_vc_sys" $*; st_$_vc_sys
+_vc_sys=$(distsys); $_vc_sys "$@"; st_$_vc_sys
 _invoke_2c "alias" "$_vc_sys=source $(_root)/builtin/sh.vc"
 
