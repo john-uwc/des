@@ -1,0 +1,21 @@
+#!/bin/bash
+
+#author: steven, date: 2017.3.31
+
+# calculate status of current git repos
+function st_git(){
+local br=$((_invoke_2c git branch) | grep \* | cut -c3-)
+_dw_store "vc" "${br:----}"
+}
+
+# distinguish the current vc system
+function distsys(){
+# git is the only support cvs now, the others may be support later
+echo "git"
+}
+
+# main
+_invoke_2c "unalias" "$_vc_sys"
+_vc_sys=$(distsys); _invoke_2c "$_vc_sys" $*; st_$_vc_sys
+_invoke_2c "alias" "$_vc_sys=source $(_root)/builtin/sh.vc"
+

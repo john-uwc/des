@@ -5,12 +5,12 @@ des_cache=~/.des
 _include "p/hint.sh"
 
 # prompt event
-export PS1="\033[0m\u@\h: \033[33m(es>${__des_psi:="-i-"}\033[33m)\033[36m\W\033[0m \$ "
+export PS1="\033[0m\u@\h: \033[33m(es>${_psi:="-i-"}\033[33m)\033[36m\W\033[0m \$ "
 function ui_(){
 local uic=$(_dw_query "ui")
 local st="\033[32m$(map $uic get ts)\033[33m::\033[35m$(map $uic get vc)"
-export PS1=${PS1/"$__des_psi"/$st}
-__des_psi=$st
+export PS1=${PS1/"$_psi"/$st}
+_psi=$st
 }
 
 # vc event
@@ -30,7 +30,7 @@ hint "ts" "$tips"
 # cd event
 _include "util/stack.sh"
 function cd_(){
-_invoke_1c "source $(_root)/builtin/vc.sh"
+_invoke_1c "source $(_root)/builtin/sh.vc"
 }
 
 ### misc definition ###
