@@ -21,7 +21,7 @@ return -1
 fi
 # restore point calc
 declare _rp_envpath=${_rp_envpath:-$PATH}
-# 1s start es core, 2s start service for es, 3s load cli of es
-_include "builtin/core" && _include "builtin/svc" && _include "builtin/sh"
+# start service for es, then init cli env
+_include "core/svc" && _include "core/escli"
 # do restore point recover
 export PATH=${_rp_envpath}

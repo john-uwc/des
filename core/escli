@@ -3,6 +3,8 @@
 # author: steven, date:2017.4.12
 # es's cli
 
+_include "etc/cli.rc"
+
 clis=$(_invoke_2c "ls $(_root)/builtin/*.sh $(_root)/*.sh")
 for cli in $clis; do
 ci=$(basename $cli); alias ${ci%.sh}="source $cli"
