@@ -25,7 +25,7 @@ export PATH=${_rp_envpath}$p
 
 # pick from cache
 function pick(){
-local r=$des_cache/ts.m/$1 && [ -d "$r" ] && echo $(cd "$r" && pwd)
+local r=$es_cache/ts.m/$1 && [ -d "$r" ] && echo $(cd "$r" && pwd)
 }
 
 # main

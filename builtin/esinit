@@ -2,14 +2,14 @@
 
 # init script
 # author: steven, date:2017.4.12
-# process of des init
+# process of es init
 
-# des's root
+# es's root
 function _root(){
 echo $__anchor
 }
 
-# module's import relative to des's root
+# module's import relative to es's root
 function _include(){
 [ -f "$(_root)/$1" ] && source "$(_root)/$1"
 }
@@ -21,7 +21,7 @@ return -1
 fi
 # restore point calc
 declare _rp_envpath=${_rp_envpath:-$PATH}
-# 1s start des core, 2s start service for des, 3s load cli of des
+# 1s start es core, 2s start service for es, 3s load cli of es
 _include "builtin/core" && _include "builtin/svc" && _include "builtin/sh"
 # do restore point recover
 export PATH=${_rp_envpath}

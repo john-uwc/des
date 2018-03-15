@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # author: steven, date:2017.4.12
-# des's cli
+# es's cli
 
 clis=$(_invoke_2c "ls $(_root)/builtin/*.sh $(_root)/*.sh")
 for cli in $clis; do

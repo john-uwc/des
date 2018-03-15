@@ -1,5 +1,5 @@
 # cache directory
-des_cache=~/.des
+es_cache=~/.es
 
 # hook routine to handle event
 _include "p/hint.sh"
@@ -34,5 +34,5 @@ _invoke_1c "source $(_root)/builtin/sh.vc"
 }
 
 ### misc definition ###
-source ~/.des/rc
+source ~/.es/rc
 
