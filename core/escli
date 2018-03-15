@@ -3,9 +3,15 @@
 # author: steven, date:2017.4.12
 # es's cli
 
-_include "etc/cli.rc"
+_include "etc/loop.cli.rc" && _invoke_2c "source $es_cache/etc/loop.cli.rc"
 
-clis=$(_invoke_2c "ls $(_root)/builtin/*.sh $(_root)/*.sh")
+# restore point calc
+declare _rp_envpath=${_rp_envpath:-"$PATH:$(_root)/builtin"}
+
+clis=$(_invoke_2c "ls -A $(_root)/builtin | grep '^\..*'")
 for cli in $clis; do
-ci=$(basename $cli); alias ${ci%.sh}="source $cli"
+_invoke_2c "source $(_root)/builtin/$cli $(pwd)"
 done
+
+# do restore point recover
+export PATH=${_rp_envpath}

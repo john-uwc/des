@@ -1,6 +1,3 @@
-# cache directory
-es_cache=~/.es
-
 # hook routine to handle event
 _include "p/hint.sh"
 
@@ -26,13 +23,8 @@ tips="$tips,$e"
 done
 hint "ts" "$tips"
 }
- 
+
 # cd event
-_include "util/stack.sh"
 function cd_(){
-_invoke_1c "source $(_root)/builtin/sh.vc"
+_include "builtin/.vc"
 }
-
-### misc definition ###
-source ~/.es/rc
-

@@ -15,13 +15,12 @@ function _include(){
 }
 
 
-# main process
+
+
+# main process, start es
 if [ -z "$(_root)" ]; then # env vaildate
 return -1
 fi
-# restore point calc
-declare _rp_envpath=${_rp_envpath:-$PATH}
-# start service for es, then init cli env
+
+# es service first, then init cli env
 _include "core/svc" && _include "core/escli"
-# do restore point recover
-export PATH=${_rp_envpath}

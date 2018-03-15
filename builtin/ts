@@ -14,7 +14,7 @@ args: ....
 HELP
 }
 
-# perform export path and fresh hint 
+# perform export path
 function commit(){
 local p="";
 for e in $(map "$1" eset); do

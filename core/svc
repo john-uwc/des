@@ -3,6 +3,8 @@
 # author: steven, date: 2017.4.25
 # const defination and routine
 
+_include "etc/svc.rc"
+
 # error code
 declare -i __err_f_param=3
 declare -i __err_s_=0
