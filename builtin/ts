@@ -23,13 +23,13 @@ done
 export PATH=${_rp_envpath}$p
 }
 
-# pick from cache
-function pick(){
+# select from cache
+function cache(){
 local r=$es_cache/ts/$1 && [ -d "$r" ] && echo $(cd "$r" && pwd)
 }
 
 # main
-local order=${1:-""}
+declare order=${1:-""}
 
 shift
 
@@ -37,7 +37,7 @@ shift
 [ "help" == "$order" ] && help && return $__err_s_
 
 # begin calculate, query current
-local result=$(_dw_query "ts" $(map init))
+declare result=$(_dw_query "ts" $(map init))
 
 # trw
 if [ "trw" == "$order" ]; then
@@ -51,7 +51,7 @@ if [ "pck" == "$order" ]; then
 if [ -n "$2" -a -d "$2" ]; then
 result=$(map "$result" put "$1" $(cd "$2" && pwd))
 else
-t=$(pick "$1") && [ -n "$t" -a -d "$t" ] && result=$(map "$result" put "$1" "$t")
+t=$(cache "$1") && [ -n "$t" ] && result=$(map "$result" put "$1" "$t")
 fi
 fi
 
