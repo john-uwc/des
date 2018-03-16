@@ -15,7 +15,7 @@ local br=$(_invoke_2c git branch | grep \* | cut -c3-) && _dw_store "vc" "${br:-
 }
 
 # main
-local sys=$(_dw_query "sys.vc")
+declare sys=$(_dw_query "sys.vc")
 _invoke_2c "unalias" "$sys"
 sys=$(distsys); $sys "$@"; st_$sys
 _invoke_2c "alias" "$sys=source .vc"
