@@ -1,0 +1,10 @@
+#!/bin/bash
+
+#author: steven, date: 2017.3.31
+
+# main
+declare hints=$(_dw_query "hint"); [ -z "$hints" ] && hints=$(map init)
+
+hints=$(map "$hints" put "$1" "$2")
+
+_dw_store "hint" "$hints"

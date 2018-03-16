@@ -1,18 +1,16 @@
 # hook routine to handle event
-_include "p/hint.sh"
-
 # prompt event
 export PS1="\033[0m\u@\h: \033[33m(es>${_psi:="-i-"}\033[33m)\033[36m\W\033[0m \$ "
-function ui_(){
-local uic=$(_dw_query "ui")
-local st="\033[32m$(map $uic get ts)\033[33m::\033[35m$(map $uic get vc)"
+function hint_(){
+local hints=$(_dw_query "hint")
+local st="\033[32m$(map $hints get ts)\033[33m::\033[35m$(map $hints get vc)"
 export PS1=${PS1/"$_psi"/$st}
 _psi=$st
 }
 
 # vc event
 function vc_(){
-hint "vc" $(_dw_query "vc")
+source hint "vc" $(_dw_query "vc")
 }
 
 # ts event
@@ -21,10 +19,10 @@ local tips=""
 for e in $(map $(_dw_query ts) kset); do 
 tips="$tips,$e"
 done
-hint "ts" "$tips"
+source hint "ts" "$tips"
 }
 
 # cd event
-function cd_(){
-_include "builtin/.vc"
+function d_(){
+source .vc $(pwd)
 }

@@ -5,13 +5,18 @@
 
 _include "etc/loop.cli.rc" && _invoke_2c "source $es_cache/etc/loop.cli.rc"
 
-# restore point calc
-declare _rp_envpath=${_rp_envpath:-"$PATH:$(_root)/builtin"}
+# restore point calc and restore point recover
+_rp_envpath=${_rp_envpath:-"$PATH:$(_root)/builtin"} \
+    && export PATH=${_rp_envpath}
 
-clis=$(_invoke_2c "ls -A $(_root)/builtin | grep '^\..*'")
-for cli in $clis; do
-_invoke_2c "source $(_root)/builtin/$cli $(pwd)"
+
+# export cl
+declare cli
+
+for cli in $(_invoke_2c "ls $(_root)/builtin"); do
+_invoke_2c "alias" "$cli=source $cli"
 done
 
-# do restore point recover
-export PATH=${_rp_envpath}
+for cli in $(_invoke_2c "ls -A $(_root)/builtin | grep '^\..*'"); do
+_invoke_2c "source $cli $(pwd)"
+done
