@@ -4,8 +4,7 @@
 # author: steven, date:2017.3.31
 # a kind of map implement writing in shell script language
 
-_include "util/collection.sh"
-_include "util/pair.sh"
+_include "lib/util/collection"
 
 # manual
 function map_help(){
@@ -21,7 +20,7 @@ echo
 # remove the element tag with key
 function map_del(){
 if [ $# -ne 2 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 local r=$(collection "$1" ls $(pair new "$2" \*))
 r=$(pair k ''$r)
@@ -31,7 +30,7 @@ echo $(collection $1 remove ''$r)
 # update element's value tag with key
 function map_put(){
 if [ $# -ne 3 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 # if item tag with key is exist, 
 # remove it, then append one to the head shipped with new value
@@ -43,7 +42,7 @@ echo "$r"
 # element value set
 function map_vset(){
 if [ $# -ne 1 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 local r=$(map_eset "$1") && echo $(pair v ''$r)
 }
@@ -51,7 +50,7 @@ local r=$(map_eset "$1") && echo $(pair v ''$r)
 # fetch element set
 function map_eset(){
 if [ $# -ne 1 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 local r=$(collection "$1" at) && echo "$r"
 }
@@ -59,7 +58,7 @@ local r=$(collection "$1" at) && echo "$r"
 # element key set
 function map_kset(){
 if [ $# -ne 1 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 local r=$(map_eset "$1") && echo $(pair k ''$r)
 }
@@ -67,7 +66,7 @@ local r=$(map_eset "$1") && echo $(pair k ''$r)
 # fetch the value of the element tag with key
 function map_get(){
 if [ $# -ne 2 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 local r=$(collection "$1" ls $(pair new "$2" \*))
 r=$(pair v ''$r) && r=$(pair v ''$r)
@@ -77,7 +76,7 @@ echo "$r"
 # empty test
 function map_empty(){
 if [ $# -ne 1 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 echo $(collection "$1" empty)
 }
@@ -85,7 +84,7 @@ echo $(collection "$1" empty)
 # clear
 function map_clr(){
 if [ $# -ne 1 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 echo $(collection "$1" clr) # generate new collection for map
 }

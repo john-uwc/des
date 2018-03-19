@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# author: steven, date: 2017.4.25
+# service routine of es's core
+
+# runtime data warehouse
+unset _dw_c && _dw_c=$(map init)
+
+# select op
+function _dw_query(){
+[ $# -gt 2 ] && return $_err_f_param_
+local r=$(map $_dw_c get "$1") && echo ${r:-"$2"}
+}
+# delete op
+function _dw_purge(){
+[ $# -ne 1 ] && return $_err_f_param_
+_dw_c=$(map $_dw_c del "$1") && _loop "$1"
+}
+# insert or update op
+function _dw_store(){
+[ $# -ne 2 ] && return $_err_f_param_
+_dw_c=$(map $_dw_c put "$1" "$2") && _loop "$1"
+}

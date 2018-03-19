@@ -1,0 +1,38 @@
+#!/bin/bash
+
+#author: steven, date: 2017.3.31
+
+# calculate status of repos with git
+function __vc_st_git(){
+local br=$(vc git branch | grep \* | cut -c3-)
+echo "${br:----}"
+}
+
+# distinguish the current vc system
+function vc_s(){
+# git is the only support cvs now, the others may be support later
+echo "git"
+}
+
+# version control routine
+function vc(){
+if [ $# -lt 1 ]; then # show help tips
+cat << HELP
+vc is a version control system holder
+usage: vc [vcs] <current vcs's subcmd and params>
+HELP
+return $_err_f_param_
+fi
+
+local vcs=$(vc_s)
+[ $# -ne 1 ] && vcs=$1 && shift
+# unalias and invoke vcs to consume，then alias again
+_invoke_2c unalias "$vcs"
+$vcs "$@"
+_invoke_2c alias "$vcs=vc $vcs"
+}
+
+# calculate status of repos
+function vc_st(){
+__vc_st_$(vc_s)
+}

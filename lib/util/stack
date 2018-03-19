@@ -4,7 +4,7 @@
 # author: steven, date:2017.3.31
 # a kind of stack implement writing in shell script language
 
-_include "util/collection.sh"
+_include "lib/util/collection"
 
 # manual
 function stack_help(){
@@ -19,7 +19,7 @@ TIPS
 # fetch the value of the top element
 function stack_o(){
 if [ $# -ne 1 -o "true" == "$(stack_empty $1)" ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 echo $(collection "$1" at 0)
 }
@@ -27,7 +27,7 @@ echo $(collection "$1" at 0)
 # pop the top element
 function stack_pop(){
 if [ $# -ne 1 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 echo $(collection "$1" remove 0) # remove the top element
 }
@@ -35,7 +35,7 @@ echo $(collection "$1" remove 0) # remove the top element
 # push new element
 function stack_push(){
 if [ $# -ne 2 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 echo $(collection "$1" insert "$2" 0) # append new element to the head of stack
 }
@@ -43,7 +43,7 @@ echo $(collection "$1" insert "$2" 0) # append new element to the head of stack
 # empty test
 function stack_empty(){
 if [ $# -ne 1 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 echo $(collection "$1" empty)
 }
@@ -51,7 +51,7 @@ echo $(collection "$1" empty)
 # clear
 function stack_clr(){
 if [ $# -ne 1 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 echo $(collection "$1" clr) # generate new collection for stack
 }

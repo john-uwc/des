@@ -1,0 +1,11 @@
+#!/bin/bash
+
+# author: steven, date:2017.3.31
+# es cli
+
+# root location calculate
+declare -r _root_=$(dirname $(cd $(dirname "${BASH_SOURCE[0]}") && pwd))
+
+source "$_root_/lib/frw"
+# ready go
+_include "core/startup"

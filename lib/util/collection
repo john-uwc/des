@@ -4,7 +4,7 @@
 # author: steven, date:2017.4.12
 # a kind of collection implement writing in shell script language
 
-_include "util/pair.sh"
+_include "lib/util/pair"
 
 # manual
 function collection_help(){
@@ -19,7 +19,7 @@ TIPS
 # clear with items
 function collection_clr(){
 if [ $# -lt 1 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 shift
 local r="{"
@@ -33,7 +33,7 @@ r=$r"}" && echo "$r"
 # if not any fix position, the all items should be hit
 function collection_at(){
 if [ $# -lt 1]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 local cls=$(echo "$1" \
 | perl -e '@l= <>=~/(?x)\((([^\(\)]*|\((?1)\))*)\)/g; print "@l\n"')
@@ -48,7 +48,7 @@ echo "$r"
 # as a list according to a selector, which could be null or a regular expression
 function collection_ls(){
 if [ $# -lt 1 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 local r=""
 local p=-1
@@ -61,7 +61,7 @@ echo "$r"
 # calculate size
 function collection_size(){
 if [ $# -ne 1 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 local r=($(collection_at "$1")) && echo ${#r[@]}
 }
@@ -69,7 +69,7 @@ local r=($(collection_at "$1")) && echo ${#r[@]}
 # remove items from collection at a group of fix position
 function collection_remove(){
 if [ $# -lt 2 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 local r=($(collection_at "$1"))
 local o=$1; shift
@@ -82,7 +82,7 @@ echo $(collection_clr "$o" ${r[@]})
 # insert item to collection at fix position
 function collection_insert(){
 if [ $# -ne 3 ]; then
-return $__err_f_param
+return $_err_f_param_
 fi
 local r=($(collection_at "$1"))
 local i=$3; [ $i -lt 0 ] && i=0 || [ $i -gt ${#r[@]} ] && i=${#r[@]}

@@ -1,0 +1,7 @@
+#!/bin/bash
+
+# tree structure
+# author: steven, date:2018.3.18
+# a kind of tree implement writing in shell script language
+
+_include "lib/util/map"

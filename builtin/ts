@@ -1,59 +1,46 @@
 #!/bin/bash
 
-#author: steven, date: 2017.3.31
+# author: steven, date: 2017.3.31
+# tool suite increment loader
 
-_include "util/map.sh"
+# search from cache
+function ts_s(){
+local r=$es_cache/ts/$1 && [ -d "$r" ] && echo $r
+}
 
-# help tips
-function help(){
+# tool suite loader routine
+function ts(){
+local order=${1:-""}
+
+if [ "" == "$order" ]; then # blank to call help
 cat << HELP
-ts is a tool suite increment loader 
+ts is a tool suite increment loader
 usage: ts <order> <args>
 order: pck/trw
 args: ....
 HELP
-}
-
-# perform export path
-function commit(){
-local p="";
-for e in $(map "$1" eset); do
-p="$p:$(pair v $e)"
-done
-export PATH=${_rp_envpath}$p
-}
-
-# select from cache
-function cache(){
-local r=$es_cache/ts/$1 && [ -d "$r" ] && echo $(cd "$r" && pwd)
-}
-
-# main
-declare order=${1:-""}
+return $_err_f_param_
+fi
 
 shift
 
-# with help
-[ "help" == "$order" ] && help && return $__err_s_
-
 # begin calculate, query current
-declare result=$(_dw_query "ts" $(map init))
+local tss=$(_dw_query "ts" $(map init))
 
 # trw
 if [ "trw" == "$order" ]; then
-[ $# -ne 1 ] && return $__err_f_param
-result=$(map "$result" del "$1")
+[ $# -ne 1 ] && return $(ts)
+tss=$(map "$tss" del "$1")
 fi
 
 # pck
 if [ "pck" == "$order" ]; then
-[ $# -gt 2 -o -z "$1" ] && return $__err_f_param
-if [ -n "$2" -a -d "$2" ]; then
-result=$(map "$result" put "$1" $(cd "$2" && pwd))
-else
-t=$(cache "$1") && [ -n "$t" ] && result=$(map "$result" put "$1" "$t")
+[ $# -gt 1 -o -z "$1" ] && return $(ts)
+local t=$(ts_s "$1")
+if [ -n "$t" ]; then
+tss=$(map "$tss" put "$1" "$t")
 fi
 fi
 
-# calculate finish, do handle
-commit "$result" && _dw_store "ts" "$result"
+_dw_store "ts" "$tss"
+}

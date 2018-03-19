@@ -1,0 +1,37 @@
+#!/bin/bash
+
+# author: steven, date:2018.3.16
+# hook routine to handle cli event
+
+# hint event for prompt
+export PS1="\033[0m\u@\h: \033[33m(es>${_psi:="-i-"}\033[33m)\033[36m\W\033[0m \$ "
+function _hint_loop(){
+local hints=$(_dw_query "hint")
+local st="\033[32m$(map $hints get a.ts)\033[33m::\033[35m$(map $hints get st.vc)"
+export PS1=${PS1/"$_psi"/$st}
+_psi=$st
+}
+
+# vc event
+function _vc_loop(){
+hint "st.vc" $(vc_st)
+}
+
+# d event
+function _d_loop(){
+local cs=$(_dw_query "vc")
+_invoke_2c unalias "$cs"; cs=$(vc_s); _invoke_2c alias "$cs=vc $cs"
+_dw_store "vc" $cs
+}
+
+# ts event
+function _ts_loop(){
+local envrp=$(_dw_query "path.env.rp")
+local tsc=","; local tss=""
+local e
+for e in $(map $(_dw_query ts) eset); do
+tss="$tss:$(pair v $e)"
+tsc="$tsc$(pair k $e),"
+done
+export PATH=$envrp$tss && hint "a.ts" $tsc
+}
