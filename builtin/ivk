@@ -1,0 +1,21 @@
+#!/bin/bash
+
+# author: steven, date: 2018.3.21
+# routine invoker
+
+# invoker routine
+function ivk(){
+if [ $# -lt 1 ]; then # help tips
+cat << HELP
+ivk is a wrapper for calling routine, which has a way round alias restrictions
+usage: ivk <routine> [params ...]
+HELP
+return $_err_f_param_
+fi
+
+local routine=${1:-""}
+local ref=$(alias "$routine") && ref=${ref/*$routine=/} && ref=${ref//\'/}
+[ ! -z "$ref" ] && _invoke_2c unalias "$routine"
+shift && $routine "$@"
+[ ! -z "$ref" ] && _invoke_2c alias "$routine=$ref"
+}

@@ -4,24 +4,27 @@
 # hook routine to handle cli event
 
 # hint event for prompt
-export PS1="\033[0m\u@\h: \033[33m(es>${_psi:="-i-"}\033[33m)\033[36m\W\033[0m \$ "
+export PS1="\033[0m\u@\h: \033[33m(es>>${_psi:="-i-"}\033[33m)\033[36m\W\033[0m \$ "
 function _hint_loop(){
 local hints=$(_dw_query "hint")
-local st="\033[32m$(map $hints get a.ts)\033[33m::\033[35m$(map $hints get st.vc)"
+local st="\033[32m$(map $hints get a.ts)\033[33m:\033[35m$(map $hints get st.vc)"
 export PS1=${PS1/"$_psi"/$st}
 _psi=$st
 }
 
-# vc event
-function _vc_loop(){
-hint "st.vc" $(vc_st)
+# fs event
+function _fs_loop(){
+local cs=$(_dw_query "vc")
+if [ "$cs" != $(vc_cs) ]; then
+_invoke_2c unalias "$cs"; cs=$(vc_cs); _invoke_2c alias "$cs=vc $cs"
+fi
+_dw_store "vc" "$cs"
 }
 
-# d event
-function _d_loop(){
-local cs=$(_dw_query "vc")
-_invoke_2c unalias "$cs"; cs=$(vc_s); _invoke_2c alias "$cs=vc $cs"
-_dw_store "vc" $cs
+# vc event
+function _vc_loop(){
+local cs=$(_dw_query "vc");
+hint "st.vc" $cs\'$(__vc_st_$cs)
 }
 
 # ts event

@@ -5,6 +5,10 @@
 
 # search from cache
 function ts_s(){
+if [ $# -lt 1 ]; then # list all tools
+_invoke_2c "ls $es_cache/ts"
+return $_err_s_
+fi
 local r=$es_cache/ts/$1 && [ -d "$r" ] && echo $r
 }
 
@@ -12,7 +16,7 @@ local r=$es_cache/ts/$1 && [ -d "$r" ] && echo $r
 function ts(){
 local order=${1:-""}
 
-if [ "" == "$order" ]; then # blank to call help
+if [ -z "$order" ]; then # blank to call help
 cat << HELP
 ts is a tool suite increment loader
 usage: ts <order> <args>

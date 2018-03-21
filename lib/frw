@@ -7,19 +7,14 @@
 declare -ir _err_f_param_=3
 declare -ir _err_s_=0
 
-# module's import relative to es's root
-function _include(){
-[ -f "$_root_/$1" ] && source "$_root_/$1"
-}
-
 # routine invoke with err ignore
 function _invoke_2c(){
 local c="$1" && shift && $c "$@" 2> /dev/null
 }
 
-# routine invoke with err and normal ignore
-function _invoke_1c(){
-local c="$1" && shift && $c "$@" > /dev/null 2>&1
+# module's import relative to root
+function _include(){
+[ -f "$_root_/$1" ] && source "$_root_/$1"
 }
 
 

@@ -6,6 +6,7 @@
 # root location calculate
 declare -r _root_=$(dirname $(cd $(dirname "${BASH_SOURCE[0]}") && pwd))
 
-source "$_root_/lib/frw"
-# ready go
-_include "core/startup"
+source "$_root_/lib/frw" && _include "core/startup"
+
+
+fs cd $(pwd) # ready go

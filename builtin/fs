@@ -1,0 +1,23 @@
+#!/bin/bash
+
+# author: steven, date: 2017.3.31
+# file system management
+
+# management routine
+function fs(){
+if [ $# -lt 1 ]; then # help tips
+cat << HELP
+fs is a file system command wrapper
+usage: fs <command> [params ...]
+HELP
+return $_err_f_param_
+fi
+
+local cmd=${1:-""}
+[ "cd" != "$cmd" ] && return $_err_f_param_
+ivk "$@" && _dw_store "fs" "$cmd"
+}
+
+
+# export alias
+_invoke_2c alias "cd=fs cd"
