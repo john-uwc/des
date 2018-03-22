@@ -1,9 +1,9 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # author: steven, date:2017.4.12
 # process of es startup
 
-_include "etc/es.rc"
+_include "es.rc"
 # service first, then init cli env
 _include "core/svcs"
 _include "core/clenv"

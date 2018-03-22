@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # stack structure
 # author: steven, date:2017.3.31
 # a kind of stack implement writing in shell script language
 
-_include "lib/util/collection"
+_include "frw/util/collection"
 
 # manual
 function stack_help(){

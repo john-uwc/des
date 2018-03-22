@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # author: steven, date: 2017.3.31
 # file system management

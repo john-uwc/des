@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # map structure
 # author: steven, date:2017.3.31
 # a kind of map implement writing in shell script language
 
-_include "lib/util/collection"
+_include "frw/util/collection"
 
 # manual
 function map_help(){

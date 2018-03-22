@@ -1,4 +1,4 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # author: steven, date:2017.4.12
 # es's cl env init

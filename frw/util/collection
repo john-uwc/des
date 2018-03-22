@@ -1,10 +1,10 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
 # collection structure
 # author: steven, date:2017.4.12
 # a kind of collection implement writing in shell script language
 
-_include "lib/util/pair"
+_include "frw/util/pair"
 
 # manual
 function collection_help(){

@@ -1,6 +1,6 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
-# foundation framework
+# load foundation framework
 # author: steven, date:2018.3.18
 
 # error code
@@ -18,8 +18,8 @@ function _include(){
 }
 
 
-_include "lib/util/tree"
-_include "lib/util/stack"
+_include "frw/util/tree"
+_include "frw/util/stack"
 
 
 # loop routine
