@@ -29,9 +29,9 @@ return $_err_f_param_
 fi
 local r="${1%%|*}"; shift
 for p in $@; do
-local i=${p%%|*} && r="$r $i"
+local i="${p%%|*}" && r="$r $i"
 done
-echo $r
+echo "$r"
 }
 
 # value of a pair, also support a pair list
@@ -39,11 +39,12 @@ function pair_v(){
 if [ $# -lt 1 ]; then
 return $_err_f_param_
 fi
-local r=$(pair_k $1) && r=${1#$r|}; shift
+local r=$(pair_k "$1") && r="${1#$r|}"
+shift
 for p in $@; do
-local i=$(pair_k $p) && i=${p#$i|} && r="$r $i"
+local i=$(pair_k "$p") && i="${p#$i|}" && r="$r $i"
 done
-echo $r
+echo "$r"
 }
 
 # main entry

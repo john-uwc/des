@@ -18,15 +18,10 @@ TIPS
 
 # clear with items
 function collection_clr(){
-if [ $# -lt 1 ]; then
-return $_err_f_param_
-fi
-shift
 local r="{"
-for i in "$@"; do
-r=$r"($i)" 
-done
-r=$r"}" && echo $r
+for i in $@; do r="$r($i)"; done
+r="$r}"
+echo "$r"
 }
 
 # fetch items in the collection at a group of fix position,
@@ -38,11 +33,11 @@ fi
 local cls=$(echo "$1" \
 | perl -e '@l= <>=~/(?x)\((([^\(\)]*|\((?1)\))*)\)/g; print "@l\n"')
 shift
-local r=$cls
+local r="$cls"
 if [ $# -gt 0 ]; then
-r=""; for i in "$@"; do r=$r${cls[$i]}; done
+r=""; for i in $@; do r="$r${cls[$i]}"; done
 fi
-echo $r
+echo "$r"
 }
 
 # as a list according to a selector, which could be null or a regular expression
@@ -50,12 +45,11 @@ function collection_ls(){
 if [ $# -lt 1 ]; then
 return $_err_f_param_
 fi
-local r=""
-local p=-1
+local r=""; local p=-1
 for i in $(collection_at "$1"); do
-p=$[p+1]; [ -z ${i/${2:-*}/} ] && r="$r $(pair new $p $i) "
+p=$[p+1]; [ -z ${i/${2:-*}/} ] && r="$r $(pair new "$p" "$i") "
 done
-echo $r
+echo "$r"
 }
 
 # calculate size
@@ -72,11 +66,9 @@ if [ $# -lt 2 ]; then
 return $_err_f_param_
 fi
 local r=($(collection_at "$1"))
-local o=$1; shift
-for i in ${@:-"null"}; do
-unset r[$i]
-done
-echo $(collection_clr "$o" ${r[@]})
+shift
+for i in $@; do unset r[$i]; done
+echo $(collection_clr "${r[@]}")
 }
 
 # insert item to collection at fix position
@@ -85,28 +77,29 @@ if [ $# -ne 3 ]; then
 return $_err_f_param_
 fi
 local r=($(collection_at "$1"))
-local i=$3; [ $i -lt 0 ] && i=0 || [ $i -gt ${#r[@]} ] && i=${#r[@]}
+local i=${3:-0}; [ $i -lt 0 ] && i=0 || [ $i -gt ${#r[@]} ] && i=${#r[@]}
 local p=${#r[@]}
 while [ $p -ne $i ]; do
-p=$[p-1] && r[$[p+1]]=${r[$p]}
+p=$[p-1] && r[$[p+1]]="${r[$p]}"
 done
-r[$i]=$2
-echo $(collection_clr "$1" ${r[@]})
+r[$i]="$2" && echo $(collection_clr "${r[@]}")
 }
 
 # empty test
 function collection_empty(){
-[ $1 == $(collection_clr "{}") ] && echo true || echo false # if equals to a new collection, return true, otherwise false
+[ "$1" == $(collection_clr) ] && echo true || echo false # if equals to a new collection, return true, otherwise false
 }
 
 # main entry
 function collection(){
 # while the raw parameter list has a single item,
-# it must be "help" or "new", that is a rule
-# resolve parameter list
-local container=$([ "help" == "$1" ] && echo "" || echo ${1:-""})
-local order=$([ "help" == "$1" ] && echo $1 || echo ${2:-""})
-shift; shift # args for order
-# order execute
+# it must be "clr", that is a rule
+if [ "clr" == "$1" ]; then
+echo $(collection_clr) && return $_err_s_
+fi
+# parameters resolve and execute order
+local container="${1:-""}"
+local order="${2:-""}"
+shift; shift # extra args
 collection_$order "$container" "$@" || collection_help
 }

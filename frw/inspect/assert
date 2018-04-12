@@ -1,0 +1,37 @@
+#!/usr/bin/env bash
+
+# author: steven, date:2018.4.12
+# assert for robustness test
+
+function assert_help(){
+cat << TIPS
+assert <actual> <order> <expected> [args...]
+actual: a actual value
+order: equal
+expected: expected result
+args: ...
+TIPS
+}
+
+function assert_equal(){
+if [ $# -lt 2 ]; then
+return $_err_f_param_
+fi
+local actual=${1:-""}; local expected=${2:-""}
+shift; shift
+echo [$([ "$expected" == "$actual" ] && echo pass || echo fail)]:${@:-"$expected equal to $actual"}
+}
+
+
+function assert(){
+# raw parameter list must has at least three items,
+# the second parameter must be "equal", first and third one is a value, that is a rule
+if [ $# -lt 3 ]; then
+return $_err_f_param_
+fi
+# parameter resolved
+local actual=${1:-""};local expected=${3:-""}
+local order=$([ "equal" == "$2" ] && echo $2 || echo help)
+shift; shift; shift # shift fetch extras
+assert_$order "$actual" "$expected" "$@"
+}

@@ -18,7 +18,7 @@ TIPS
 
 # fetch the value of the top element
 function stack_o(){
-if [ $# -ne 1 -o "true" == "$(stack_empty $1)" ]; then
+if [ $# -ne 1 -o "true" == "$(stack_empty "$1")" ]; then
 return $_err_f_param_
 fi
 echo $(collection "$1" at 0)
@@ -50,25 +50,22 @@ echo $(collection "$1" empty)
 
 # clear
 function stack_clr(){
-if [ $# -ne 1 ]; then
-return $_err_f_param_
-fi
-echo $(collection "$1" clr) # generate new collection for stack
+echo $(collection clr) # generate new collection for stack
 }
 
 # init, the same as clear
 function stack_init(){
-echo $(stack_clr "{}")
+echo $(stack_clr)
 }
 
 # main entry
 function stack(){
 # while the raw parameter list has a single item,
-# it must be "help" or "init", that is a rule
-# resolve parameter list
-local container=$([ "help" == "$1" -o "init" == "$1" ] && echo "" || echo ${1:-""})
-local order=$([ "help" == "$1" -o "init" == "$1" ] && echo $1 || echo ${2:-""})
-shift; shift # args for order
-# order execute
+# it must be "init", that is a rule
+
+# parameters resolve and execute order
+local container=$([ "init" == "$1" ] && echo "" || echo "${1:-""}")
+local order=$([ "init" == "$1" ] && echo "$1" || echo "${2:-""}")
+shift; shift # extra args
 stack_$order "$container" "$@" || stack_help
 }

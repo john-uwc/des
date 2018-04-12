@@ -6,7 +6,11 @@
 # root location calculate
 declare -r _root_=$(dirname $(cd $(dirname "${BASH_SOURCE[0]}") && pwd))
 
-source "$_root_/frw/load" && _include "core/startup"
+source "$_root_/frw/install"
 
+if [ "--sck" == "$1" ]; then
+_include "bin/icks/util.frw"; exit $_err_s_
+fi
 
-fs cd $(pwd) # ready go
+# start and ready go
+_include "core/startup" && fs cd $(pwd)

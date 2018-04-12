@@ -22,6 +22,7 @@ local module=${1:-""}
 [ -f "$_root_/$module" ] && source "$_root_/$module"
 }
 
+_include "frw/inspect/assert"
 
 _include "frw/util/tree"
 _include "frw/util/stack"
