@@ -6,7 +6,7 @@
 # search from cache
 function ts_s(){
 if [ $# -lt 1 ]; then # list all tools
-_invoke_2c "ls $es_cache/ts"
+_invoke_2c "ls" "$es_cache/ts"
 return $_err_s_
 fi
 local r=$es_cache/ts/$1 && [ -d "$r" ] && echo $r

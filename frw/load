@@ -7,14 +7,19 @@
 declare -ir _err_f_param_=3
 declare -ir _err_s_=0
 
-# routine invoke with err ignore
+# routine invoke with err ignore, it has a way round alias restrictions
 function _invoke_2c(){
-local c="$1" && shift && $c "$@" 2> /dev/null
+local routine=${1:-""}
+local ref=$(alias "$routine" 2> /dev/null) && ref=${ref/*$routine=/} && ref=${ref//\'/}
+[ ! -z "$ref" ] && unalias "$routine" 2> /dev/null
+shift && $routine "$@" 2> /dev/null
+[ ! -z "$ref" ] && alias "$routine=$ref" 2> /dev/null
 }
 
 # module's import relative to root
 function _include(){
-[ -f "$_root_/$1" ] && source "$_root_/$1"
+local module=${1:-""}
+[ -f "$_root_/$module" ] && source "$_root_/$module"
 }
 
 
@@ -25,5 +30,5 @@ _include "frw/util/stack"
 # loop routine
 # it is a temporary sln for event loop
 function _loop(){
-local c="_$1_loop" && shift && _invoke_2c $c "$@"
+local routine="_$1_loop" && shift && _invoke_2c $routine "$@"
 }

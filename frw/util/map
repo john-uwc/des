@@ -22,7 +22,7 @@ function map_del(){
 if [ $# -ne 2 ]; then
 return $_err_f_param_
 fi
-local r=$(collection "$1" ls $(pair new "$2" \*))
+local r=$(collection "$1" ls $(pair new "$2" "*"))
 r=$(pair k ''$r)
 echo $(collection $1 remove ''$r)
 }
@@ -35,8 +35,8 @@ fi
 # if item tag with key is exist, 
 # remove it, then append one to the head shipped with new value
 local r=$(map_del "$1" "$2")
-r=$(collection $r insert $(pair new "$2" "$3") 0)
-echo "$r"
+r=$(collection "$r" insert $(pair new "$2" "$3") 0)
+echo $r
 }
 
 # element value set
@@ -68,9 +68,9 @@ function map_get(){
 if [ $# -ne 2 ]; then
 return $_err_f_param_
 fi
-local r=$(collection "$1" ls $(pair new "$2" \*))
+local r=$(collection "$1" ls $(pair new "$2" "*"))
 r=$(pair v ''$r) && r=$(pair v ''$r)
-echo "$r"
+echo $r
 }
 
 # empty test
@@ -103,5 +103,5 @@ local container=$([ "help" == "$1" -o "init" == "$1" ] && echo "" || echo ${1:-"
 local order=$([ "help" == "$1" -o "init" == "$1" ] && echo $1 || echo ${2:-""})
 shift; shift # args for order
 # order execute
-_invoke_2c "map_$order" "$container" "$@" || map_help
+map_$order "$container" "$@" || map_help
 }

@@ -15,7 +15,7 @@ fi
 
 local cmd=${1:-""}
 [ "cd" != "$cmd" ] && return $_err_f_param_
-ivk "$@" && _dw_store "fs" "$cmd"
+_invoke_2c "$@" && _dw_store "fs" "$cmd"
 }
 
 

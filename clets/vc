@@ -4,7 +4,7 @@
 
 # calculate status of repos with git
 function __vc_st_git(){
-local br=$(ivk git branch | grep \* | cut -c3-)
+local br=$(_invoke_2c git branch | grep \* | cut -c3-)
 echo "${br:----}"
 }
 
@@ -26,7 +26,7 @@ fi
 
 local vcs=$(vc_cs);
 [ $# -ne 1 ] && vcs=${1:-""} && shift
-ivk "$vcs" "$@" && _dw_store "vc" "$vcs"
+_invoke_2c "$vcs" "$@" && _dw_store "vc" "$vcs"
 }
 
 # calculate status of repos

@@ -26,13 +26,13 @@ local r="{"
 for i in "$@"; do
 r=$r"($i)" 
 done
-r=$r"}" && echo "$r"
+r=$r"}" && echo $r
 }
 
 # fetch items in the collection at a group of fix position,
 # if not any fix position, the all items should be hit
 function collection_at(){
-if [ $# -lt 1]; then
+if [ $# -lt 1 ]; then
 return $_err_f_param_
 fi
 local cls=$(echo "$1" \
@@ -42,7 +42,7 @@ local r=$cls
 if [ $# -gt 0 ]; then
 r=""; for i in "$@"; do r=$r${cls[$i]}; done
 fi
-echo "$r"
+echo $r
 }
 
 # as a list according to a selector, which could be null or a regular expression
@@ -55,7 +55,7 @@ local p=-1
 for i in $(collection_at "$1"); do
 p=$[p+1]; [ -z ${i/${2:-*}/} ] && r="$r $(pair new $p $i) "
 done
-echo "$r"
+echo $r
 }
 
 # calculate size
@@ -73,7 +73,7 @@ return $_err_f_param_
 fi
 local r=($(collection_at "$1"))
 local o=$1; shift
-for i in "$@"; do
+for i in ${@:-"null"}; do
 unset r[$i]
 done
 echo $(collection_clr "$o" ${r[@]})
@@ -108,5 +108,5 @@ local container=$([ "help" == "$1" ] && echo "" || echo ${1:-""})
 local order=$([ "help" == "$1" ] && echo $1 || echo ${2:-""})
 shift; shift # args for order
 # order execute
-_invoke_2c "collection_$order" "$container" "$@" || collection_help
+collection_$order "$container" "$@" || collection_help
 }

@@ -70,5 +70,5 @@ local container=$([ "help" == "$1" -o "init" == "$1" ] && echo "" || echo ${1:-"
 local order=$([ "help" == "$1" -o "init" == "$1" ] && echo $1 || echo ${2:-""})
 shift; shift # args for order
 # order execute
-_invoke_2c "stack_$order" "$container" "$@" || stack_help
+stack_$order "$container" "$@" || stack_help
 }

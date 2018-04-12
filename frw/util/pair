@@ -48,5 +48,5 @@ echo $r
 
 # main entry
 function pair(){
-local order=${1:-""} && shift && _invoke_2c "pair_$order" "$@" || pair_help
+local order=${1:-""} && shift && pair_$order "$@" || pair_help
 }
