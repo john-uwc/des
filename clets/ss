@@ -1,0 +1,7 @@
+#!/usr/bin/env bash
+
+#author: steven, date: 2017.3.31
+
+function  ss(){
+echo "$_dw_c"
+}

@@ -22,15 +22,6 @@ _dw_c=$(map $_dw_c put "$1" "$2") && _loop "$1"
 }
 
 
-# hint event for prompt
-export PS1="\033[0m\u@\h: \033[33m(es>>${_psi:="-i-"}\033[33m)\033[36m\W\033[0m \$ "
-function _hint_loop(){
-local hints=$(_dw_query "hint")
-local st="\033[32m$(map $hints get a.ts)\033[33m:\033[35m$(map $hints get st.vc)"
-export PS1=${PS1/"$_psi"/$st}
-_psi=$st
-}
-
 # fs event
 function _fs_loop(){
 local cs=$(_dw_query "vc")
@@ -43,7 +34,7 @@ _dw_store "vc" "$cs"
 # vc event
 function _vc_loop(){
 local cs=$(_dw_query "vc");
-hint "st.vc" $cs\'$(__vc_st_$cs)
+prompt "st.vc" $(__vc_st_$cs)
 }
 
 # ts event
@@ -55,5 +46,5 @@ for e in $(map $(_dw_query ts) eset); do
 tss="$tss:$(pair v $e)"
 tsc="$tsc$(pair k $e),"
 done
-export PATH=$envrp$tss && hint "a.ts" $tsc
+export PATH=$envrp$tss && prompt "a.ts" $tsc
 }

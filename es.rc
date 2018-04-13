@@ -1,2 +1,12 @@
 # cache directory
 es_cache=~/.es
+
+
+# swap handle
+function _swap_(){
+local st="\033[32m$(map "$1" get "a.ts")\033[33m:\033[35m$(map "$1" get "st.vc")"
+export PS1=${PS1/"$_psi"/$st}
+_psi=$st
+}
+
+export PS1="\033[0m\u@\h: \033[33m(es>>${_psi:="-i-"}\033[33m)\033[36m\W\033[0m \$ "

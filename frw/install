@@ -33,3 +33,6 @@ _include "frw/util/stack"
 function _loop(){
 local routine="_$1_loop" && shift && _invoke_2c $routine "$@"
 }
+
+
+_include "frw/swap/prompt"
