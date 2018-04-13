@@ -1,7 +1,26 @@
 #!/usr/bin/env bash
 
 # author: steven, date:2018.3.16
-# hook routine to handle cli event
+# routine to handle event ship with a pump
+
+# runtime data pool
+unset _dw_c && _dw_c=$(map init)
+# select op
+function _dw_query(){
+[ $# -gt 2 ] && return $_err_f_param_
+local r=$(map $_dw_c get "$1") && echo ${r:-"$2"}
+}
+# delete op
+function _dw_purge(){
+[ $# -ne 1 ] && return $_err_f_param_
+_dw_c=$(map $_dw_c del "$1") && _loop "$1"
+}
+# insert or update op
+function _dw_store(){
+[ $# -ne 2 ] && return $_err_f_param_
+_dw_c=$(map $_dw_c put "$1" "$2") && _loop "$1"
+}
+
 
 # hint event for prompt
 export PS1="\033[0m\u@\h: \033[33m(es>>${_psi:="-i-"}\033[33m)\033[36m\W\033[0m \$ "
@@ -29,7 +48,7 @@ hint "st.vc" $cs\'$(__vc_st_$cs)
 
 # ts event
 function _ts_loop(){
-local envrp=$(_dw_query "path.env.rp")
+local envrp=$(_es_env "path")
 local tsc=","; local tss=""
 local e
 for e in $(map $(_dw_query ts) eset); do

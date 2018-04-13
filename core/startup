@@ -3,11 +3,19 @@
 # author: steven, date:2017.4.12
 # process of es startup
 
-_include "es.rc"
-# service first, then init cli env
+# creation env
+unset _env_c && _env_c=$(map init)
+_env_c=$(map $_env_c put "env.path" $PATH)
+
+function _es_env(){
+if [ $# -ne 1 ]; then
+return $_err_f_param_
+fi
+echo $(map $_env_c get "env.$1")
+}
+
+# after service start,
+# then resource config and init cli env
 _include "core/svcs"
+_include "es.rc"
 _include "core/clenv"
-
-
-# recovery point
-_dw_store "path.env.rp" $PATH
