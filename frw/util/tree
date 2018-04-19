@@ -4,4 +4,107 @@
 # author: steven, date:2018.3.18
 # a kind of tree implement writing in shell script language
 
+# structure is based on multi map
+# example:
+# {} ---> {(root|)}
+#             |
+#             -> {(root|{(node0|)(node1|) ...})}
+#                           |
+#                           -> {(root|{(node0|{(node11|)})(node1|) ...})}
+# path define "root:node:"
+
 _include "frw/util/map"
+_include "frw/util/stack"
+
+
+function __tree_selector(){
+if [ $# -ne 1 ]; then
+return $_err_f_param_
+fi
+echo "${1//\:/ }"
+}
+
+# manual
+function tree_help(){
+cat << TIPS
+tree [container] <order> [<args>]
+container: a memory var to store raw string of tree
+order: graft/sel/trav/clr/init
+args: ...
+TIPS
+}
+
+# graft sub branch to the tree
+# trim a branch from the tree equals to graft a null
+function tree_graft(){
+if [ $# -ne 3 ]; then
+return $_err_f_param_
+fi
+local r="$2"
+local ts=$(stack init)
+local t="$1"
+for sel in $(__tree_selector "$3"); do
+t=$(map "$t" get "$sel"); t=${t:-$(map init)}; t=$(pair new "$sel" "$t")
+ts=$(stack "$ts" push "$t")
+done
+while [ false = "$(stack "$ts" empty)" ]; do
+t=$(stack "$ts" o); r=$(map "$(pair v "$t")" put "$(pair k "$t")" "$r"); ts=$(stack "$ts" pop)
+done
+echo "$r"
+}
+
+# obtain sub branch with path
+function tree_sel(){
+if [ $# -ne 2 ]; then
+return $_err_f_param_
+fi
+local r="$1"
+for sel in $(__tree_selector "$2"); do
+r=$(map "$r" get "$sel")
+done
+echo "$r"
+}
+
+# traverse whole nodes of the tree
+function tree_trav(){
+if [ $# -ne 1 ]; then
+return $_err_f_param_
+fi
+local r=$(collection clr)
+local t="$1"; local ts=$(stack clr); local s=""
+while [ false = "$(stack "$ts" empty)" -o false = "$(map "$t" empty)" ]; do
+for t in $(map "$t" eset); do
+ts=$(stack "$ts" push "$(pair k "$t")"); ts=$(stack "$ts" push "$(pair v "$t")")
+done
+t=$(stack "$ts" o); ts=$(stack "$ts" pop)
+if [ ! -z "$t" ]; then
+continue
+fi
+t=$(stack "$ts" o)
+r=$(collection "$r" insert "$t" 0); ts=$(stack "$ts" pop);
+t=$(stack "$ts" o);
+done
+echo "$r"
+}
+
+# clear
+function tree_clr(){
+echo $(collection clr) # generate new collection for tree
+}
+
+# init, the same as clear
+function tree_init(){
+echo $(tree_clr)
+}
+
+# main entry
+function tree(){
+# while the raw parameter list has a single item,
+# it must be "init", that is a rule
+
+# parameters resolve and execute order
+local container=$([ "init" == "$1" ] && echo "" || echo "${1:-""}")
+local order=$([ "init" == "$1" ] && echo "$1" || echo "${2:-""}")
+shift; shift # extra args
+tree_$order "$container" "$@" || tree_help
+}

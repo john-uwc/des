@@ -15,6 +15,7 @@ unset _collection_c && _collection_c=$(collection clr)
 _collection_c=$(collection $_collection_c insert "v-1" 0); assert $_collection_c equal "{(v-1)}" "insert \"v-1\" with empty"
 el=$(collection $_collection_c at 0); assert $el equal "v-1" "query at pos 0"
 _collection_c=$(collection $_collection_c insert "v-l" 0); assert $_collection_c equal "{(v-l)(v-1)}" "insert \"v-l\""
+el=$(collection $_collection_c at 0); assert $el equal "v-l" "query at pos 0 again"
 el=$(collection $_collection_c ls "v-1"); assert $el equal "1|v-1" "list \"v-1\""
 _collection_c=$(collection $_collection_c insert "k|v" 1); assert $_collection_c equal "{(v-l)(k|v)(v-1)}" "insert a compact data, a pair"
 #el=$(collection $_collection_c at); assert $el equal "v-l v-1" "query with whole entries"
@@ -32,10 +33,6 @@ _map_c=$(map $_map_c put "k-l" "v-l"); assert $_map_c equal "{(k-l|v-l)(k-1|v-1)
 _map_c=$(map $_map_c del "k-1"); assert $_map_c equal "{(k-l|v-l)}" "del \"k-1\""
 
 
-# tree test
-echo ">>tree test<<"
-
-
 # stack test
 echo ">>stack test<<"
 
@@ -43,3 +40,10 @@ unset _stack_c && _stack_c=$(stack init)
 _stack_c=$(stack $_stack_c push "s1"); assert $_stack_c equal "{(s1)}" "push \"s1\" with empty"
 se=$(stack $_stack_c o); assert $se equal "s1" "\"s1\" on the stack top"
 _stack_c=$(stack $_stack_c pop); assert $_stack_c equal "{}" "pop" 
+
+
+# tree test
+echo ">>tree test<<"
+unset _tree_c && _tree_c=$(tree init)
+_tree_c=$(tree $_tree_c graft "{(ch0|{(ch1|)})}" "r:l0:"); assert "$_tree_c" equal "{(r|{(l0|{(ch0|{(ch1|)})})})}" "graft sub tree to \"r:l0:\""
+_tree_c=$(tree $_tree_c sel "r:l0:ch0:"); assert "$_tree_c" equal "{(ch1|)}" "select sub branch with path \"r:l0:ch0:\""

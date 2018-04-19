@@ -4,6 +4,11 @@
 # author: steven, date:2017.3.31
 # a kind of map implement writing in shell script language
 
+# structure is based on collection
+# example:
+# {} ---> {(k|v)(k0|v0)(k1|v1) ...}
+# v should be any data structure, and k must be simple
+
 _include "frw/util/collection"
 
 # manual

@@ -4,6 +4,11 @@
 # author: steven, date:2017.4.12
 # a kind of collection implement writing in shell script language
 
+# example:
+# {} ---> {(element0)(element1)(element2)...}
+# () boundary of collection element
+# and element should be any data structure
+
 _include "frw/util/pair"
 
 # manual
@@ -11,7 +16,7 @@ function collection_help(){
 cat << TIPS
 collection [container] <order> [<args>]
 container: a memory var to store raw string of collection
-order: clr/at/ls/size/remove/insert/empty
+order: clr/empty/at/ls/size/remove/insert
 args: ...
 TIPS
 }
@@ -19,9 +24,14 @@ TIPS
 # clear with items
 function collection_clr(){
 local r="{"
-for i in $@; do r="$r($i)"; done
+for i in "$@"; do r="$r($i)"; done
 r="$r}"
 echo "$r"
+}
+
+# empty test
+function collection_empty(){
+[[ "$1" =~ ^{(\(.*\))+}$ ]] && echo false || echo true # if likes basic struct of collection, return true, otherwise true
 }
 
 # fetch items in the collection at a group of fix position,
@@ -30,14 +40,14 @@ function collection_at(){
 if [ $# -lt 1 ]; then
 return $_err_f_param_
 fi
-local cls=$(echo "$1" \
-| perl -e '@l= <>=~/(?x)\((([^\(\)]*|\((?1)\))*)\)/g; print "@l\n"')
+local cls=($(echo "$1" \
+| perl -e '@l= <>=~/(?x)\((([^\(\)]*|\((?1)\))*)\)/g; print "@l\n"'))
 shift
-local r="$cls"
+local r=(${cls[@]})
 if [ $# -gt 0 ]; then
-r=""; for i in $@; do r="$r${cls[$i]}"; done
+r=(); for i in "$@"; do r=($r ${cls[$i]}); done
 fi
-echo "$r"
+echo "${r[@]}"
 }
 
 # as a list according to a selector, which could be null or a regular expression
@@ -45,11 +55,11 @@ function collection_ls(){
 if [ $# -lt 1 ]; then
 return $_err_f_param_
 fi
-local r=""; local p=-1
+local r=(); local p=-1
 for i in $(collection_at "$1"); do
-p=$[p+1]; [ -z ${i/${2:-*}/} ] && r="$r $(pair new "$p" "$i") "
+p=$[p+1]; [ -z ${i/${2:-*}/} ] && r=($r $(pair new "$p" "$i"))
 done
-echo "$r"
+echo "${r[@]}"
 }
 
 # calculate size
@@ -67,7 +77,7 @@ return $_err_f_param_
 fi
 local r=($(collection_at "$1"))
 shift
-for i in $@; do unset r[$i]; done
+for i in "$@"; do [ ! -z "$i" ] && unset r[$i]; done
 echo $(collection_clr "${r[@]}")
 }
 
@@ -85,10 +95,7 @@ done
 r[$i]="$2" && echo $(collection_clr "${r[@]}")
 }
 
-# empty test
-function collection_empty(){
-[ "$1" == $(collection_clr) ] && echo true || echo false # if equals to a new collection, return true, otherwise false
-}
+
 
 # main entry
 function collection(){

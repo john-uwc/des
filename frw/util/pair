@@ -4,6 +4,10 @@
 # author: steven, date:2017.4.12
 # a kind of key|value pair implement writing in shell script language
 
+# example:
+# k|v
+# v and k could be any data structure
+
 # manual
 function pair_help(){
 cat << TIPS
@@ -27,11 +31,11 @@ function pair_k(){
 if [ $# -lt 1 ]; then
 return $_err_f_param_
 fi
-local r="${1%%|*}"; shift
-for p in $@; do
-local i="${p%%|*}" && r="$r $i"
+local r=()
+for p in "$@"; do
+p=(${p/%|*/' ""'}); [ 2 -eq ${#p[@]} ] && r=(${r[@]} ${p[0]})
 done
-echo "$r"
+echo "${r[@]}"
 }
 
 # value of a pair, also support a pair list
@@ -39,12 +43,11 @@ function pair_v(){
 if [ $# -lt 1 ]; then
 return $_err_f_param_
 fi
-local r=$(pair_k "$1") && r="${1#$r|}"
-shift
-for p in $@; do
-local i=$(pair_k "$p") && i="${p#$i|}" && r="$r $i"
+local r=()
+for p in "$@"; do
+local k="${p/%|*/|}"; p=(${p/#$k/'"" '}); [ 2 -eq ${#p[@]} ] && r=(${r[@]} ${p[1]})
 done
-echo "$r"
+echo "${r[@]}"
 }
 
 # main entry
