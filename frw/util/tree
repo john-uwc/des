@@ -40,15 +40,20 @@ function tree_graft(){
 if [ $# -ne 3 ]; then
 return $_err_f_param_
 fi
-local r="$2"
-local ts=$(stack init)
-local t="$1"
+local r="$1"
+local ts=$(stack init); ts=$(stack "$ts" push "$r")
+local t=""
 for sel in $(__tree_selector "$3"); do
-t=$(map "$t" get "$sel"); t=${t:-$(map init)}; t=$(pair new "$sel" "$t")
+t=$(stack "$ts" o)
+t=$(map "$t" get "$sel"); t="$(map "$(map init)" put "$sel" "${t:-$(map init)}")"
 ts=$(stack "$ts" push "$t")
 done
+[ false = "$(map "$2" empty)" ] && r="$2" || r=$(map "$(map init)" put "$2" "")
 while [ false = "$(stack "$ts" empty)" ]; do
-t=$(stack "$ts" o); r=$(map "$(pair v "$t")" put "$(pair k "$t")" "$r"); ts=$(stack "$ts" pop)
+t="$(collection "$(stack "$ts" o)" at 0)"
+ts=$(stack "$ts" pop)
+[ -z "$(pair k "$t")" ] && continue || r=$(map "$(stack "$ts" o)" put "$(pair k "$t")" "$r")
+ts=$(stack "$ts" pop)
 done
 echo "$r"
 }
@@ -71,25 +76,27 @@ if [ $# -ne 1 ]; then
 return $_err_f_param_
 fi
 local r=$(collection clr)
-local t="$1"; local ts=$(stack clr); local s=""
-while [ false = "$(stack "$ts" empty)" -o false = "$(map "$t" empty)" ]; do
+local t="$1"
+local sp=""; local nv=""; local ts=$(stack init)
+while [ false = "$(map "$t" empty)" \
+            -o false = "$(stack "$ts" empty)" ]; do
 for t in $(map "$t" eset); do
-ts=$(stack "$ts" push "$(pair k "$t")"); ts=$(stack "$ts" push "$(pair v "$t")")
+ts=$(stack "$ts" push "$(pair new "$sp$(pair k "$t")" "$(pair v "$t")")")
 done
 t=$(stack "$ts" o); ts=$(stack "$ts" pop)
-if [ ! -z "$t" ]; then
+if [ -z "$(pair v "$t")" ]; then
+nv=$(pair k "$t"); nv=${nv#$sp}; nv=$(pair new "$sp" "$nv")
+r=$(collection "$r" insert "$nv" 0)
 continue
 fi
-t=$(stack "$ts" o)
-r=$(collection "$r" insert "$t" 0); ts=$(stack "$ts" pop);
-t=$(stack "$ts" o);
+sp=$(pair k "$t"):; t=$(pair v "$t")
 done
-echo "$r"
+echo "$(collection "$r" at)"
 }
 
 # clear
 function tree_clr(){
-echo $(collection clr) # generate new collection for tree
+echo $(map init) # generate root map for tree
 }
 
 # init, the same as clear
