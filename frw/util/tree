@@ -11,7 +11,10 @@
 #             -> {(root|{(node0|)(node1|) ...})}
 #                           |
 #                           -> {(root|{(node0|{(node11|)})(node1|) ...})}
-# path define "root:node:"
+# notion:
+# leaf node -> "{(node|)}"
+# non-leaf node -> "{(node|{})}"
+# path(selector) -> "root:node:"
 
 _include "frw/util/map"
 _include "frw/util/stack"
@@ -40,20 +43,22 @@ function tree_graft(){
 if [ $# -ne 3 ]; then
 return $_err_f_param_
 fi
-local r="$1"
-local ts=$(stack init); ts=$(stack "$ts" push "$r")
-local t=""
+local r=""
+local ts=$(stack init); local t="$1"
 for sel in $(__tree_selector "$3"); do
-t=$(stack "$ts" o)
-t=$(map "$t" get "$sel"); t="$(map "$(map init)" put "$sel" "${t:-$(map init)}")"
-ts=$(stack "$ts" push "$t")
+if [ false = "$(stack "$ts" empty)" ]; then
+t=$(stack "$ts" o); t=$(pair v "$t"); t=$(map "$t" get "$sel")
+fi
+ts=$(stack "$ts" push \
+"$(pair new "$sel" "${t:-$(map init)}")" \
+)
 done
+if [ ! -z "$2" ]; then
 [ false = "$(map "$2" empty)" ] && r="$2" || r=$(map "$(map init)" put "$2" "")
+fi
 while [ false = "$(stack "$ts" empty)" ]; do
-t="$(collection "$(stack "$ts" o)" at 0)"
-ts=$(stack "$ts" pop)
-[ -z "$(pair k "$t")" ] && continue || r=$(map "$(stack "$ts" o)" put "$(pair k "$t")" "$r")
-ts=$(stack "$ts" pop)
+t=$(stack "$ts" o); ts=$(stack "$ts" pop)
+r=$(map "$(pair v "$t")" put "$(pair k "$t")" "$r")
 done
 echo "$r"
 }
@@ -67,6 +72,7 @@ local r="$1"
 for sel in $(__tree_selector "$2"); do
 r=$(map "$r" get "$sel")
 done
+[ -z "$(pair v "$(collection "$r" at 0)")" ] && r="$(pair k "$(collection "$r" at 0)")"
 echo "$r"
 }
 

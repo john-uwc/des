@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# author: steven, date: 2017.3.31
+# net
+
+function net(){
+# exec 3>/dev/tcp/127.0.0.1/3223
+return
+}

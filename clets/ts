@@ -29,7 +29,7 @@ fi
 shift
 
 # begin calculate, query current
-local tss=$(_dw_query "ts" $(map init))
+local tss=$(_dw_query "ts:" $(map init))
 
 # trw
 if [ "trw" == "$order" ]; then
@@ -46,5 +46,5 @@ tss=$(map "$tss" put "$1" "$t")
 fi
 fi
 
-_dw_store "ts" "$tss"
+_dw_store "ts:" "$tss"
 }

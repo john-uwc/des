@@ -3,3 +3,5 @@
 # author: steven, date: 2017.4.25
 # service routine of es's core
 
+# creation env
+_dw_store "ro:env:PATH:" "$PATH"

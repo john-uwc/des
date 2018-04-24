@@ -1,50 +1,43 @@
 #!/usr/bin/env bash
 
 # author: steven, date:2018.3.16
-# routine to handle event ship with a pump
+# routine to handle event
 
-# runtime data pool
-unset _dw_c && _dw_c=$(map init)
-# select op
-function _dw_query(){
-[ $# -gt 2 ] && return $_err_f_param_
-local r=$(map $_dw_c get "$1") && echo ${r:-"$2"}
-}
-# delete op
-function _dw_purge(){
-[ $# -ne 1 ] && return $_err_f_param_
-_dw_c=$(map $_dw_c del "$1") && _loop "$1"
-}
-# insert or update op
-function _dw_store(){
-[ $# -ne 2 ] && return $_err_f_param_
-_dw_c=$(map $_dw_c put "$1" "$2") && _loop "$1"
+# ss event
+function _ss_loop(){
+PS1="\033[0m\u@\h: \033[33m(es>>${_psi:="-i-"}\033[33m)\033[36m\W\033[0m \$ "
+local ss=$(_dw_query "ss:")
+ss="\033[32m$(map "$ss" get "tsc")\033[33m:\033[35m$(map "$ss" get "vcst")"
+export PS1=${PS1/"$_psi"/$ss}
+_psi=$ss
 }
 
 
 # fs event
 function _fs_loop(){
-local cs=$(_dw_query "vc")
+local cs=$(_dw_query "vc:")
 if [ "$cs" != $(vc_cs) ]; then
 _invoke_2c unalias "$cs"; cs=$(vc_cs); _invoke_2c alias "$cs=vc $cs"
 fi
-_dw_store "vc" "$cs"
+_dw_store "vc:" "$cs"
 }
 
 # vc event
 function _vc_loop(){
-local cs=$(_dw_query "vc");
-prompt "st.vc" $(__vc_st_$cs)
+local vcss=$(_dw_query "ss:")
+local cs=$(_dw_query "vc:")
+vcss=$(map "$vcss" put "vcst" "$(__vc_st_$cs)")
+_dw_store "ss:" "$vcss"
 }
 
 # ts event
 function _ts_loop(){
-local envrp=$(_es_env "path")
-local tsc=","; local tss=""
-local e
-for e in $(map $(_dw_query ts) eset); do
-tss="$tss:$(pair v $e)"
-tsc="$tsc$(pair k $e),"
+local tss=""; local tsc=","
+for e in $(map "$(_dw_query "ts:")" eset); do
+tsc="$tsc$(pair k $e),"; tss="$tss:$(pair v $e)"
 done
-export PATH=$envrp$tss && prompt "a.ts" $tsc
+export PATH=$(_dw_query "ro:env:PATH:")$tss
+tss=$(_dw_query "ss:")
+tss=$(map "$tss" put "tsc" $tsc)
+_dw_store "ss:" "$tss"
 }

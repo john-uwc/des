@@ -46,4 +46,4 @@ _stack_c=$(stack $_stack_c pop); assert $_stack_c equal "{}" "pop"
 echo ">>tree test<<"
 unset _tree_c && _tree_c=$(tree init)
 _tree_c=$(tree $_tree_c graft "{(ch0|{(ch1|)})}" "r:l0:"); assert "$_tree_c" equal "{(r|{(l0|{(ch0|{(ch1|)})})})}" "graft sub tree to \"r:l0:\""
-_tree_c=$(tree $_tree_c sel "r:l0:ch0:"); assert "$_tree_c" equal "{(ch1|)}" "select sub branch with path \"r:l0:ch0:\""
+_tree_c=$(tree $_tree_c sel "r:l0:ch0:"); assert "$_tree_c" equal "ch1" "select sub branch with path \"r:l0:ch0:\""

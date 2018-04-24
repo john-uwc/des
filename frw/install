@@ -23,16 +23,11 @@ local module=${1:-""}
 }
 
 _include "frw/inspect/assert"
-
 _include "frw/util/tree"
-_include "frw/util/stack"
-
+_include "frw/net/net"
 
 # loop routine
 # it is a temporary sln for event loop
 function _loop(){
-local routine="_$1_loop" && shift && _invoke_2c $routine "$@"
+local routine="_${1//:/_}loop" && shift && _invoke_2c $routine "$@"
 }
-
-
-_include "frw/swap/prompt"

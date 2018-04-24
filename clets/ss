@@ -2,6 +2,8 @@
 
 #author: steven, date: 2017.3.31
 
-function  ss(){
-echo "$_dw_c"
+function ss(){
+for s in $(_dw_query); do
+echo "$s"
+done
 }

@@ -13,4 +13,4 @@ _include "bin/icks/util.frw"; exit $_err_s_
 fi
 
 # start and ready go
-_include "core/startup" && fs cd $(pwd)
+_include "core/startup"; fs cd $(pwd)

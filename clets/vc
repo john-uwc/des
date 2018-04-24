@@ -26,7 +26,7 @@ fi
 
 local vcs=$(vc_cs);
 [ $# -ne 1 ] && vcs=${1:-""} && shift
-_invoke_2c "$vcs" "$@" && _dw_store "vc" "$vcs"
+_invoke_2c "$vcs" "$@" && _dw_store "vc:" "$vcs"
 }
 
 # calculate status of repos
