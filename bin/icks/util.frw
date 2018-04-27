@@ -9,7 +9,7 @@ pv=$(pair v "$_pair_c"); assert $pv equal "v-1" "query pair's value"
 
 
 # collection test
-echo ">>collection test"
+echo ">>collection test<<"
 
 unset _collection_c && _collection_c=$(collection clr)
 _collection_c=$(collection $_collection_c insert "v-1" 0); assert $_collection_c equal "{(v-1)}" "insert \"v-1\" with empty"

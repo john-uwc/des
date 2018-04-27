@@ -3,14 +3,13 @@
 # author: steven, date:2017.3.31
 # es cli
 
-# root location calculate
-declare -r _root_=$(dirname $(cd $(dirname "${BASH_SOURCE[0]}") && pwd))
-
-source "$_root_/frw/install"
+source "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/../frw/.ins"
 
 if [ "--sck" == "$1" ]; then
-_include "bin/icks/util.frw"; exit $_err_s_
+_include "bin/icks/util.frw"
+_include "bin/icks/sys.frw"
+exit $_err_s_
 fi
 
 # start and ready go
-_include "core/startup"; fs cd $(pwd)
+_include "core/startup" && fs cd $(pwd)

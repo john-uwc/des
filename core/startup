@@ -22,7 +22,7 @@ function _dw_store(){
 _dw_c=$(tree "$_dw_c" \
 graft "$2" "$1" \
 )
-_loop "$1"
+hatch "$1"
 }
 
 # delete op

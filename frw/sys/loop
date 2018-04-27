@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+# author: steven, date: 2017.3.31
+# sys's loop routine
+
+
+_loop_c=$(queue init)
+
+
+# drive event with loop
+function loop(){
+local et
+while true; do
+if [ true = "$(queue "$_loop_c" empty)" ]; then
+continue
+fi
+et=$(queue "$_loop_c" o); _invoke_2c "_${et//:/_}loop"; _loop_c=$(queue "$_loop_c" pop)
+done
+}
+
+
+
+# event gen
+function hatch(){
+_loop_c=$(queue "$_loop_c" push "$1")
+}

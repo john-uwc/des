@@ -1,0 +1,36 @@
+#!/usr/bin/env bash
+
+# load and init foundation framework
+# author: steven, date:2018.3.18
+
+# error code
+declare -ir _err_f_param_=3
+declare -ir _err_s_=0
+
+# root location
+declare -r _root_=$(dirname $(dirname ${BASH_SOURCE[0]}))
+
+# invoke with err ignore, it has a way round alias restrictions
+function _invoke_2c(){
+local exec="$1"; local ref="$(alias "$exec" 2> /dev/null)" && ref=${ref/*$exec=/} && ref=${ref//\'/}
+[ ! -z "$ref" ] && unalias "$exec" 2> /dev/null
+shift && $exec "$@" 2> /dev/null
+[ ! -z "$ref" ] && alias "$exec=$ref" 2> /dev/null
+return $_err_s_
+}
+
+# module's import relative to root
+function _include(){
+local module="$1"
+[ -f "$_root_/$module" ] && source "$_root_/$module"
+return $?
+}
+
+_include "frw/assert/assert"
+_include "frw/util/queue"
+_include "frw/util/map"
+_include "frw/util/stack"
+_include "frw/util/tree"
+_include "frw/sys/net"
+_include "frw/sys/loop"
+

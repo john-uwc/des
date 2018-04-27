@@ -5,3 +5,5 @@
 
 # creation env
 _dw_store "ro:env:PATH:" "$PATH"
+
+#loop&

@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# author: steven, date:2018.4.26
+# es cli daemon
+
+source "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/../frw/.ins"
+
+# start d
+_include "core/startup"
