@@ -12,7 +12,6 @@
 #              |-> stack top
 # element should be any data structure
 
-_include "frw/util/collection"
 
 # manual
 function stack_help(){

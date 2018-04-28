@@ -12,19 +12,18 @@
 #              |-> head            tail <-|
 # element should be any data structure
 
-_include "frw/util/collection"
 
 # manual
 function queue_help(){
 cat << TIPS
 queue [container] <order> [<args>]
 container: a memory var to store raw string of queue
-order: o/pop/push/empty/clr/init
+order: o/poll/offer/empty/clr/init
 args: ...
 TIPS
 }
 
-# fetch the value of the element
+# fetch the value of queue's head element
 function queue_o(){
 if [ $# -ne 1 -o "true" == "$(queue_empty "$1")" ]; then
 return $_err_f_param_
@@ -32,20 +31,20 @@ fi
 echo $(collection "$1" at 0)
 }
 
-# pop a element
-function queue_pop(){
+# poll a element from head
+function queue_poll(){
 if [ $# -ne 1 ]; then
 return $_err_f_param_
 fi
 echo $(collection "$1" remove 0) # remove the head element
 }
 
-# push new element
-function queue_push(){
+# offer a new element
+function queue_offer(){
 if [ $# -ne 2 ]; then
 return $_err_f_param_
 fi
-echo $(collection "$1" insert "$2" $(collection "$1" size)) # append new element to the tail of queue
+echo $(collection "$1" insert "$2" $(collection "$1" size)) # append new element to the tail
 }
 
 # empty test

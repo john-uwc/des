@@ -9,7 +9,6 @@
 # () boundary of collection element
 # and element should be any data structure
 
-_include "frw/util/pair"
 
 # manual
 function collection_help(){
@@ -41,7 +40,7 @@ if [ $# -lt 1 ]; then
 return $_err_f_param_
 fi
 local cls=($(echo "$1" \
-| perl -e '@l= <>=~/(?x)\((([^\(\)]*|\((?1)\))*)\)/g; print "@l\n"'))
+| perl -e '@l= <>=~/\((([^\(\)]*|\((?1)\))*)\)/g; print "@l\n"'))
 shift
 local r=(${cls[@]})
 if [ $# -gt 0 ]; then
@@ -57,7 +56,7 @@ return $_err_f_param_
 fi
 local r=(); local p=-1
 for i in $(collection_at "$1"); do
-p=$[p+1]; [ -z ${i/${2:-*}/} ] && r=($r $(pair new "$p" "$i"))
+p=$[p+1]; [ -z ${i/${2:-*}/} ] && r=($r "$p|$i")
 done
 echo "${r[@]}"
 }

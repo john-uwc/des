@@ -16,9 +16,6 @@
 # non-leaf node -> "{(node|{})}"
 # path(selector) -> "root:node:"
 
-_include "frw/util/map"
-_include "frw/util/stack"
-
 
 function __tree_selector(){
 if [ $# -ne 1 ]; then

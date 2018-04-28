@@ -6,21 +6,18 @@
 
 _loop_c=$(queue init)
 
-
-# drive event with loop
+# event loop driver
 function loop(){
 local et
 while true; do
-if [ true = "$(queue "$_loop_c" empty)" ]; then
-continue
+if [ false = "$(queue "$_loop_c" empty)" ]; then
+et=$(queue "$_loop_c" o); _loop_c=$(queue "$_loop_c" poll)
 fi
-et=$(queue "$_loop_c" o); _invoke_2c "_${et//:/_}loop"; _loop_c=$(queue "$_loop_c" pop)
 done
 }
 
 
-
-# event gen
+# hatch event and dispatch
 function hatch(){
-_loop_c=$(queue "$_loop_c" push "$1")
+_invoke_2c "_${1//:/_}loop"
 }

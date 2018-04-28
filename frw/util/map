@@ -9,7 +9,6 @@
 # {} ---> {(k|v)(k0|v0)(k1|v1) ...}
 # v should be any data structure, and k must be simple
 
-_include "frw/util/collection"
 
 # manual
 function map_help(){

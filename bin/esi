@@ -5,10 +5,8 @@
 
 source "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/../frw/.ins"
 
-if [ "--sck" == "$1" ]; then
-_include "bin/icks/util.frw"
-_include "bin/icks/sys.frw"
-exit $_err_s_
+if [ "--sc" == "$1" ]; then
+_include "bin/frw.cks/util"; _include "bin/frw.cks/sys"; exit
 fi
 
 # start and ready go
