@@ -3,10 +3,14 @@
 # author: steven, date:2017.4.12
 # es's cl env init
 
-_include "clets/.loop"
-
-# export
 declare c
-for c in $(_invoke_2c "ls $_root_/clets"); do
-_invoke_2c source "$_root_/clets/$c"
+
+# clet init and export
+for c in $(_invoke_2c ls "$_root_/clet"); do
+_include "clet/$c"
+done
+
+# ckits traversal loading
+for c in $(_invoke_2c ls "$_root_/ckits"); do
+_include "ckits/$c/.loop"
 done

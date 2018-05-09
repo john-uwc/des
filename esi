@@ -1,0 +1,10 @@
+#!/usr/bin/env bash
+
+# author: steven, date:2017.3.31
+# es cli
+
+source "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd -P)/frw/.ins"
+
+
+# start and ready go
+_include "core/startup" && fs cd $(pwd)

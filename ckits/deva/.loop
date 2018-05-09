@@ -41,3 +41,10 @@ tss=$(_dw_query "ss:")
 tss=$(map "$tss" put "tsc" $tsc)
 _dw_store "ss:" "$tss"
 }
+
+
+# deva load and init
+declare c
+for c in $(_invoke_2c ls "$_root_/ckits/deva"); do
+_include "ckits/deva/$c"
+done

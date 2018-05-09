@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+# author: steven, date:2018.4.26
+# es cli self test
+
+source "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd -P)/frw/.ins"
+
+_include "test/util.frw"
+_include "test/sys.frw"
