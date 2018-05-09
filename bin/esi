@@ -3,7 +3,7 @@
 # author: steven, date:2017.3.31
 # es cli
 
-source "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd)/../frw/.ins"
+source "$(cd $(dirname ${BASH_SOURCE[0]}) && pwd -P)/../frw/.ins"
 
 if [ "--sc" == "$1" ]; then
 _include "bin/frw.cks/util"; _include "bin/frw.cks/sys"; exit
